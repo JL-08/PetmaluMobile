@@ -12,7 +12,7 @@ import {
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-const Auth = () => {
+const Auth = ({navigation}) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [isInRegister, setIsInRegister] = useState(false);
   const [isInPetForm, setIsInPetForm] = useState(false);
@@ -23,14 +23,13 @@ const Auth = () => {
       setIsInPetForm(false);
       setIsInRegister(false);
     } else if (!isInRegister) {
-      console.log('login user');
+      navigation.reset({index: 0, routes: [{name: 'Home'}]});
     } else {
       setIsInPetForm(true);
     }
   };
 
   const handleSwitch = () => {
-    console.log(isInRegister);
     if (isInRegister) {
       setIsInRegister(false);
       setIsInPetForm(false);
