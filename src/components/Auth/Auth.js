@@ -121,13 +121,18 @@ const Auth = () => {
           </Text>
         </TouchableOpacity>
         <View style={styles.switchContainer}>
-          <Text>
+          <Text Text style={{color: '#44609D'}}>
             {isInRegister
               ? 'Already have an account?'
               : "Don't have an account?"}
           </Text>
           <TouchableOpacity onPress={handleSwitch}>
-            <Text style={{marginLeft: 5}}>
+            <Text
+              style={{
+                marginLeft: 5,
+                color: '#44609D',
+                fontWeight: '700',
+              }}>
               {isInRegister ? 'Login here' : 'Register here'}
             </Text>
           </TouchableOpacity>
@@ -160,11 +165,17 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontWeight: '700',
+    marginTop: 10,
   },
   input: {
     borderBottomWidth: 1,
     borderBottomColor: '#000',
     marginTop: 10,
+    paddingBottom: 2,
+  },
+  breedInput: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
     paddingBottom: 2,
   },
   passwordInput: {

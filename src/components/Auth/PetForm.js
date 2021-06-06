@@ -35,21 +35,30 @@ const PetForm = ({styleSheet, setIsInPetForm}) => {
         keyboardType="numeric"
         placeholder="Age"
       />
-      <TextInput
-        style={styleSheet.input}
-        keyboardType="numeric"
-        placeholder="Age"
-      />
-      <Picker
-        style={styleSheet.input}
-        selectedValue={selectedLanguage}
-        onValueChange={(itemValue, itemIndex) =>
-          setSelectedLanguage(itemValue)
-        }>
-        <Picker.Item label="Dog" value="dog" />
-        <Picker.Item label="Cat" value="cat" />
-      </Picker>
-      <TextInput style={styleSheet.input} placeholder="Breed" />
+      <View
+        style={{
+          marginTop: 10,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text style={{color: '#808080', marginRight: 5}}>Type</Text>
+        <Picker
+          style={{
+            margin: 0,
+            padding: 0,
+            flex: 1,
+            color: '#808080',
+          }}
+          selectedValue={selectedLanguage}
+          onValueChange={(itemValue, itemIndex) =>
+            setSelectedLanguage(itemValue)
+          }>
+          <Picker.Item label="Dog" value="dog" />
+          <Picker.Item label="Cat" value="cat" />
+        </Picker>
+      </View>
+      <TextInput style={styleSheet.breedInput} placeholder="Breed" />
       <TextInput
         style={styleSheet.input}
         keyboardType="numeric"
