@@ -24,25 +24,18 @@ const App = () => {
   return (
     <NavigationContainer>
       <View style={{flex: 1, flexDirection: 'column'}}>
-        <ImageBackground
-          source={require('./src/images/background.png')}
-          style={{
-            resizeMode: 'cover',
-            flex: 1,
-          }}>
-          <Stack.Navigator initialRouteName="Auth">
-            <Stack.Screen
-              name="Auth"
-              component={Auth}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={{headerShown: false}}
-            />
-          </Stack.Navigator>
-        </ImageBackground>
+        <Stack.Navigator initialRouteName="Auth">
+          <Stack.Screen
+            name="Auth"
+            component={Auth}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{headerShown: false}}
+          />
+        </Stack.Navigator>
       </View>
     </NavigationContainer>
   );

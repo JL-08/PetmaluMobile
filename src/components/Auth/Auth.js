@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  ImageBackground,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
@@ -38,106 +39,113 @@ const Auth = ({navigation}) => {
     }
   };
   return (
-    <View style={styles.container}>
-      {!isInRegister && (
-        <View style={styles.logoContainer}>
-          <Image
-            style={styles.logo}
-            source={require('../../images/Petmalu-2.png')}
-          />
-          <Text style={styles.logoText}>PETSMALU</Text>
-        </View>
-      )}
-
-      <View style={styles.formContainer}>
-        <Text style={{textAlign: 'center', fontWeight: '700', fontSize: 20}}>
-          {isInRegister ? 'Register' : 'Login'}
-        </Text>
-        {isInRegister && !isInPetForm && (
-          <>
-            <Text style={styles.heading}>User Details</Text>
-            <TextInput
-              style={styles.input}
-              textContentType="name"
-              placeholder="Full Name"
+    <ImageBackground
+      source={require('../../images/background.png')}
+      style={{
+        resizeMode: 'cover',
+        flex: 1,
+      }}>
+      <View style={styles.container}>
+        {!isInRegister && (
+          <View style={styles.logoContainer}>
+            <Image
+              style={styles.logo}
+              source={require('../../images/Petmalu-2.png')}
             />
-          </>
+            <Text style={styles.logoText}>PETSMALU</Text>
+          </View>
         )}
 
-        {!isInPetForm && (
-          <>
-            <TextInput
-              style={styles.input}
-              keyboardType="email-address"
-              textContentType="emailAddress"
-              placeholder="Email Address"
-            />
-            <View style={styles.passwordContainer}>
-              <TextInput
-                style={styles.passwordInput}
-                textContentType="password"
-                placeholder="Password"
-              />
-              <TouchableOpacity
-                style={styles.icon}
-                onPress={() => setIsPasswordHidden(!isPasswordHidden)}>
-                <Icon
-                  name={isPasswordHidden ? 'eye-slash' : 'eye'}
-                  size={23}
-                  color="#222"
-                />
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-
-        {isInRegister && (
-          <>
-            {!isInPetForm && (
+        <View style={styles.formContainer}>
+          <Text style={{textAlign: 'center', fontWeight: '700', fontSize: 20}}>
+            {isInRegister ? 'Register' : 'Login'}
+          </Text>
+          {isInRegister && !isInPetForm && (
+            <>
+              <Text style={styles.heading}>User Details</Text>
               <TextInput
                 style={styles.input}
-                keyboardType="numeric"
-                textContentType="telephoneNumber"
-                placeholder="Contact Number"
+                textContentType="name"
+                placeholder="Full Name"
               />
-            )}
+            </>
+          )}
 
-            {isInPetForm && (
-              <PetForm styleSheet={styles} setIsInPetForm={setIsInPetForm} />
-            )}
-          </>
-        )}
+          {!isInPetForm && (
+            <>
+              <TextInput
+                style={styles.input}
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                placeholder="Email Address"
+              />
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  textContentType="password"
+                  placeholder="Password"
+                />
+                <TouchableOpacity
+                  style={styles.icon}
+                  onPress={() => setIsPasswordHidden(!isPasswordHidden)}>
+                  <Icon
+                    name={isPasswordHidden ? 'eye-slash' : 'eye'}
+                    size={23}
+                    color="#222"
+                  />
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
 
-        {!isInRegister && !isInPetForm && (
-          <TouchableOpacity style={styles.forgotBtn}>
-            <Text>Forgot Password?</Text>
-          </TouchableOpacity>
-        )}
+          {isInRegister && (
+            <>
+              {!isInPetForm && (
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  textContentType="telephoneNumber"
+                  placeholder="Contact Number"
+                />
+              )}
 
-        <TouchableOpacity style={styles.btn} onPress={handleButton}>
-          <Text style={styles.btnText}>
-            {!isInRegister ? 'LOGIN' : isInPetForm ? 'SUBMIT' : 'NEXT'}
-          </Text>
-        </TouchableOpacity>
-        <View style={styles.switchContainer}>
-          <Text Text style={{color: '#44609D'}}>
-            {isInRegister
-              ? 'Already have an account?'
-              : "Don't have an account?"}
-          </Text>
-          <TouchableOpacity onPress={handleSwitch}>
-            <Text
-              style={{
-                marginLeft: 5,
-                color: '#44609D',
-                fontWeight: '700',
-              }}>
-              {isInRegister ? 'Login here' : 'Register here'}
+              {isInPetForm && (
+                <PetForm styleSheet={styles} setIsInPetForm={setIsInPetForm} />
+              )}
+            </>
+          )}
+
+          {!isInRegister && !isInPetForm && (
+            <TouchableOpacity style={styles.forgotBtn}>
+              <Text>Forgot Password?</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity style={styles.btn} onPress={handleButton}>
+            <Text style={styles.btnText}>
+              {!isInRegister ? 'LOGIN' : isInPetForm ? 'SUBMIT' : 'NEXT'}
             </Text>
           </TouchableOpacity>
+          <View style={styles.switchContainer}>
+            <Text Text style={{color: '#44609D'}}>
+              {isInRegister
+                ? 'Already have an account?'
+                : "Don't have an account?"}
+            </Text>
+            <TouchableOpacity onPress={handleSwitch}>
+              <Text
+                style={{
+                  marginLeft: 5,
+                  color: '#44609D',
+                  fontWeight: '700',
+                }}>
+                {isInRegister ? 'Login here' : 'Register here'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
