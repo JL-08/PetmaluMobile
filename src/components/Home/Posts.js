@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import {Card, List, Text} from '@ui-kitten/components';
+import ContentTitle from './ContentTitle';
 
 const data = new Array(8).fill({
   title: 'Item',
@@ -39,6 +40,7 @@ const Posts = () => {
 
   return (
     <View style={styles.container}>
+      <ContentTitle title="Latest Posts" />
       <List
         contentContainerStyle={styles.contentContainer}
         data={data}
