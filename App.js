@@ -12,6 +12,7 @@ import {EvaIconsPack} from '@ui-kitten/eva-icons';
 
 import {View} from 'react-native';
 import {setCustomText} from 'react-native-global-props';
+import ProfileMenu from './src/components/ProfileMenu/ProfileMenu';
 
 const customTextProps = {
   style: {
@@ -40,6 +41,11 @@ const App = () => {
               <Stack.Screen
                 name="Home"
                 component={Home}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProfileMenu"
+                component={ProfileMenu}
                 options={{headerShown: false}}
               />
             </Stack.Navigator>

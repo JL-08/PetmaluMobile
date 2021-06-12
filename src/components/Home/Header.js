@@ -1,10 +1,17 @@
 import React from 'react';
-import {Text, View, Image, StyleSheet} from 'react-native';
+import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 
-const Header = () => {
+const Header = ({navigation}) => {
   return (
     <View style={style.container}>
-      <Image style={style.avatar} source={require('../../images/avatar.gif')} />
+      <TouchableOpacity
+        style={style.avatarContainer}
+        onPress={() => navigation.push('ProfileMenu')}>
+        <Image
+          style={style.avatar}
+          source={require('../../images/avatar.gif')}
+        />
+      </TouchableOpacity>
       <View
         style={{
           alignContent: 'center',
@@ -30,9 +37,11 @@ const style = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 100,
+  },
+  avatarContainer: {
     position: 'absolute',
-    left: 10,
-    top: 5,
+    left: 15,
+    top: 10,
   },
   logo: {
     width: 100,

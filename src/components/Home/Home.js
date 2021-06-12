@@ -13,7 +13,7 @@ import IoniconsIcon from 'react-native-vector-icons/dist/Ionicons';
 
 const Tab = createBottomTabNavigator();
 
-const Home = () => {
+const Home = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <ImageBackground
@@ -22,7 +22,7 @@ const Home = () => {
           resizeMode: 'cover',
           flex: 1,
         }}>
-        <Header />
+        <Header navigation={navigation} />
         <View style={{flex: 5}}>
           <Tab.Navigator
             initialRouteName="Home"
