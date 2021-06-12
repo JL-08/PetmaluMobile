@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import PetForm from './PetForm';
+import Verify from './Verify';
 
 import {
   Text,
@@ -17,23 +18,34 @@ const Auth = ({navigation}) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [isInRegister, setIsInRegister] = useState(false);
   const [isInPetForm, setIsInPetForm] = useState(false);
+  const [isInVerify, setIsInVerify] = useState(false);
 
   const handleButton = () => {
     if (isInRegister && isInPetForm) {
       console.log('submit registration');
       setIsInPetForm(false);
       setIsInRegister(false);
-    } else if (!isInRegister) {
+      setIsInVerify(true);
+    } else if (!isInRegister && !isInVerify) {
       navigation.reset({index: 0, routes: [{name: 'Home'}]});
-    } else {
+    } else if (isInRegister) {
       setIsInPetForm(true);
+    } else {
+      console.log('verify here');
+      setIsInRegister(false);
+      setIsInPetForm(false);
+      setIsInVerify(false);
     }
   };
 
   const handleSwitch = () => {
-    if (isInRegister) {
+    if (isInRegister && !isInVerify) {
       setIsInRegister(false);
       setIsInPetForm(false);
+    } else if (isInVerify) {
+      setIsInRegister(false);
+      setIsInPetForm(false);
+      setIsInVerify(false);
     } else {
       setIsInRegister(true);
     }
@@ -46,7 +58,7 @@ const Auth = ({navigation}) => {
         flex: 1,
       }}>
       <View style={styles.container}>
-        {!isInRegister && (
+        {!isInRegister && !isInVerify && (
           <View style={styles.logoContainer}>
             <Image
               style={styles.logo}
@@ -58,8 +70,13 @@ const Auth = ({navigation}) => {
 
         <View style={styles.formContainer}>
           <Text style={{textAlign: 'center', fontWeight: '700', fontSize: 20}}>
-            {isInRegister ? 'Register' : 'Login'}
+            {isInRegister
+              ? 'Register'
+              : isInVerify
+              ? 'Verify Your Account'
+              : 'Login'}
           </Text>
+          {isInVerify && <Verify />}
           {isInRegister && !isInPetForm && (
             <>
               <Text style={styles.heading}>User Details</Text>
@@ -71,7 +88,7 @@ const Auth = ({navigation}) => {
             </>
           )}
 
-          {!isInPetForm && (
+          {!isInPetForm && !isInVerify && (
             <>
               <TextInput
                 style={styles.input}
@@ -115,7 +132,7 @@ const Auth = ({navigation}) => {
             </>
           )}
 
-          {!isInRegister && !isInPetForm && (
+          {!isInRegister && !isInVerify && (
             <TouchableOpacity style={styles.forgotBtn}>
               <Text>Forgot Password?</Text>
             </TouchableOpacity>
@@ -123,13 +140,21 @@ const Auth = ({navigation}) => {
 
           <TouchableOpacity style={styles.btn} onPress={handleButton}>
             <Text style={styles.btnText}>
-              {!isInRegister ? 'LOGIN' : isInPetForm ? 'SUBMIT' : 'NEXT'}
+              {isInVerify
+                ? 'VERIFY'
+                : !isInRegister
+                ? 'LOGIN'
+                : isInPetForm
+                ? 'SUBMIT'
+                : 'NEXT'}
             </Text>
           </TouchableOpacity>
           <View style={styles.switchContainer}>
             <Text Text style={{color: '#44609D'}}>
               {isInRegister
                 ? 'Already have an account?'
+                : isInVerify
+                ? ''
                 : "Don't have an account?"}
             </Text>
             <TouchableOpacity onPress={handleSwitch}>
@@ -139,7 +164,11 @@ const Auth = ({navigation}) => {
                   color: '#44609D',
                   fontWeight: '700',
                 }}>
-                {isInRegister ? 'Login here' : 'Register here'}
+                {isInRegister
+                  ? 'Login here'
+                  : isInVerify
+                  ? 'Verify my account later'
+                  : 'Register here'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -209,7 +238,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: '#222',
-    marginTop: 50,
+    marginTop: 30,
     justifyContent: 'center',
   },
   btnText: {
