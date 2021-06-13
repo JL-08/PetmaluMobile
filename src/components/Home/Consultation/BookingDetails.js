@@ -3,7 +3,7 @@ import React from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-const BookingDetails = ({navigation: {goBack}}) => {
+const BookingDetails = ({route, navigation: {goBack}}) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -19,6 +19,7 @@ const BookingDetails = ({navigation: {goBack}}) => {
       <Text style={styles.title} category="h5">
         BOOKING FEE
       </Text>
+      <Text style={styles.topMargin}>{route.params.type} Consultation</Text>
       <View style={styles.tableContainer}>
         <View style={styles.description}>
           <Text category="h6" style={styles.textPadding}>
@@ -43,11 +44,11 @@ const BookingDetails = ({navigation: {goBack}}) => {
           </Text>
         </View>
       </View>
-      <Text category="p2" style={{color: '#555'}}>
+      <Text category="p2" style={{color: '#555', ...styles.topMargin}}>
         NOTE: Booking fee will be completely refunded if the veterinarian
         cancels or does not accept your appointments after 24hours of booking.
       </Text>
-      <Button>BOOK APPOINTMENT</Button>
+      <Button style={styles.topMargin}>BOOK APPOINTMENT</Button>
     </View>
   );
 };
@@ -80,6 +81,9 @@ const styles = StyleSheet.create({
   },
   textPadding: {
     paddingVertical: 3,
+  },
+  topMargin: {
+    marginTop: 10,
   },
 });
 

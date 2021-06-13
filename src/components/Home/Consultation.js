@@ -25,7 +25,7 @@ const Consultation = ({navigation}) => {
             setIsInWalkIn(false);
           }}>
           <Icon name="chevron-left" size={23} color="#999" />
-          <Text style={{marginLeft: 5, color: '#444'}}>Back</Text>
+          <Text style={{marginLeft: 5, color: '#444'}}>Back to Selection</Text>
         </TouchableOpacity>
       )}
 

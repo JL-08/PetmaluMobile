@@ -4,8 +4,9 @@ import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 import {Text, Button} from '@ui-kitten/components';
+import WalkInBookingForm from './WalkInBookingForm';
 
-const Map = () => {
+const Map = ({navigation}) => {
   const [position, setPosition] = useState({
     latitude: 10,
     longitude: 10,
@@ -13,6 +14,7 @@ const Map = () => {
     longitudeDelta: 0.001,
   });
   const [vetData, setVetData] = useState();
+  const [isInMap, setIsInMap] = useState(true);
 
   useEffect(() => {
     Geolocation.getCurrentPosition(
@@ -36,60 +38,78 @@ const Map = () => {
 
   return (
     <View>
-      <MapView
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={position}
-        showsUserLocation={true}
-        showsMyLocationButton={true}>
-        <Marker
-          title="Clinic 1"
-          icon={MapIcon}
-          coordinate={{
-            latitude: position.latitude,
-            longitude: position.longitude + 0.0004,
-          }}
-          onPress={() => setVetData('Vet 1')}
+      {!isInMap && (
+        <WalkInBookingForm
+          setIsInMap={setIsInMap}
+          setVetData={setVetData}
+          navigation={navigation}
         />
+      )}
 
-        <Marker
-          title="Clinic 2"
-          icon={MapIcon}
-          coordinate={{
-            latitude: position.latitude + 0.0004,
-            longitude: position.longitude,
-          }}
-          onPress={() => setVetData('Vet 2')}
-        />
-      </MapView>
-      {vetData && (
-        <View style={{...styles.row, ...styles.cardContainer}}>
-          <Image
-            style={{...styles.avatar, ...styles.rightMargin}}
-            source={require('../../../images/avatar.gif')}
-          />
-          <View>
-            <Text style={styles.vetName} category="h6">
-              {vetData}
-            </Text>
-            <Text category="s1">Doctor of Veterinary Medicine</Text>
-            <View style={{...styles.row, marginTop: 10}}>
-              <Icon
-                style={styles.icon}
-                name="map-marker-alt"
-                size={20}
-                color="#555"
+      {isInMap && (
+        <>
+          <MapView
+            style={styles.map}
+            provider={PROVIDER_GOOGLE}
+            initialRegion={position}
+            showsUserLocation={true}
+            showsMyLocationButton={true}>
+            <Marker
+              title="Clinic 1"
+              icon={MapIcon}
+              coordinate={{
+                latitude: position.latitude,
+                longitude: position.longitude + 0.0004,
+              }}
+              onPress={() => setVetData('Vet 1')}
+            />
+
+            <Marker
+              title="Clinic 2"
+              icon={MapIcon}
+              coordinate={{
+                latitude: position.latitude + 0.0004,
+                longitude: position.longitude,
+              }}
+              onPress={() => setVetData('Vet 2')}
+            />
+          </MapView>
+
+          {vetData && (
+            <View style={{...styles.row, ...styles.cardContainer}}>
+              <Image
+                style={{...styles.avatar, ...styles.rightMargin}}
+                source={require('../../../images/avatar.gif')}
               />
               <View>
-                <Text category="c1">Unit 70, 7th floor, Medical Condo</Text>
-                <Text category="c1">Clinic Medicus Medical Center</Text>
+                <Text style={styles.vetName} category="h6">
+                  {vetData}
+                </Text>
+                <Text category="s1">Doctor of Veterinary Medicine</Text>
+                <View style={{...styles.row, marginTop: 10}}>
+                  <Icon
+                    style={styles.icon}
+                    name="map-marker-alt"
+                    size={20}
+                    color="#555"
+                  />
+                  <View>
+                    <Text category="c1">Unit 70, 7th floor, Medical Condo</Text>
+                    <Text category="c1">Clinic Medicus Medical Center</Text>
+                  </View>
+                </View>
+                <Button
+                  style={{alignSelf: 'center', marginTop: 5}}
+                  size="tiny"
+                  onPress={() => {
+                    setIsInMap(false);
+                  }}>
+                  BOOK NOW
+                </Button>
               </View>
             </View>
-            <Button style={{alignSelf: 'center'}} size="small">
-              BOOK NOW
-            </Button>
-          </View>
-        </View>
+          )}
+        </>
       )}
     </View>
   );
