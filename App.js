@@ -9,10 +9,12 @@ import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as eva from '@eva-design/eva';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
+import {default as theme} from './custom-theme.json';
 
 import {View} from 'react-native';
 import {setCustomText} from 'react-native-global-props';
 import ProfileMenu from './src/components/ProfileMenu/ProfileMenu';
+import BookingDetails from './src/components/Home/Consultation/BookingDetails';
 
 const customTextProps = {
   style: {
@@ -29,7 +31,7 @@ const App = () => {
   return (
     <SafeAreaProvider>
       <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} theme={eva.light}>
+      <ApplicationProvider {...eva} theme={{...eva.light, ...theme}}>
         <NavigationContainer>
           <View style={{flex: 1, flexDirection: 'column'}}>
             <Stack.Navigator initialRouteName="Auth">
@@ -46,6 +48,11 @@ const App = () => {
               <Stack.Screen
                 name="ProfileMenu"
                 component={ProfileMenu}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="BookingDetails"
+                component={BookingDetails}
                 options={{headerShown: false}}
               />
             </Stack.Navigator>

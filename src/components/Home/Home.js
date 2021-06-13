@@ -10,6 +10,7 @@ import {StyleSheet, View, ImageBackground} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import IoniconsIcon from 'react-native-vector-icons/dist/Ionicons';
+import Appointments from './Appointments';
 
 const Tab = createBottomTabNavigator();
 
@@ -60,6 +61,16 @@ const Home = ({navigation}) => {
                     color="#555"
                     size={25}
                   />
+                ),
+              }}
+            />
+            <Tab.Screen
+              name="Appointments"
+              component={Appointments}
+              options={{
+                tabBarLabel: 'Appointments',
+                tabBarIcon: () => (
+                  <IoniconsIcon name="time" color="#555" size={25} />
                 ),
               }}
             />
