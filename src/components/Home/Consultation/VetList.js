@@ -133,7 +133,9 @@ const VetList = ({navigation}) => {
             placeholder="Multiline"
           />
           <Button
-            onPress={() => navigation.push('BookingDetails', {type: 'Online'})}>
+            onPress={() =>
+              navigation.push('Booking Details', {type: 'Online'})
+            }>
             CONTINUE
           </Button>
           <Button onPress={() => setIsInList(true)} appearance="ghost">

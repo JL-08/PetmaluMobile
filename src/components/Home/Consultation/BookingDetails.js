@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome';
 const BookingDetails = ({route, navigation: {goBack}}) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           marginVertical: 10,
           display: 'flex',
@@ -15,7 +15,7 @@ const BookingDetails = ({route, navigation: {goBack}}) => {
         onPress={() => goBack()}>
         <Icon name="chevron-left" size={23} color="#999" />
         <Text style={{marginLeft: 5, color: '#444'}}>Back</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <Text style={styles.title} category="h5">
         BOOKING FEE
       </Text>

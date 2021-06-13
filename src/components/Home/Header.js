@@ -6,7 +6,7 @@ const Header = ({navigation}) => {
     <View style={style.container}>
       <TouchableOpacity
         style={style.avatarContainer}
-        onPress={() => navigation.push('ProfileMenu')}>
+        onPress={() => navigation.push('Profile')}>
         <Image
           style={style.avatar}
           source={require('../../images/avatar.gif')}

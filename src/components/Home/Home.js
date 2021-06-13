@@ -64,7 +64,7 @@ const Home = ({navigation}) => {
                 ),
               }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
               name="Appointments"
               component={Appointments}
               options={{
@@ -73,7 +73,7 @@ const Home = ({navigation}) => {
                   <IoniconsIcon name="time" color="#555" size={25} />
                 ),
               }}
-            />
+            /> */}
             <Tab.Screen
               name="FAQs"
               component={FAQs}

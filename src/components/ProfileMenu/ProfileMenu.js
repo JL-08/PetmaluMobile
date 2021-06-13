@@ -11,25 +11,25 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Header from './Header';
 import Menu from './Menu';
 
-const ProfileMenu = ({navigation: {goBack}}) => {
+const ProfileMenu = ({navigation}) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           marginTop: 10,
           marginLeft: 20,
           display: 'flex',
           flexDirection: 'row',
         }}
-        onPress={() => goBack()}>
+        onPress={() => navigation.goBack()}>
         <Icon name="chevron-left" size={23} color="#999" />
         <Text style={{marginLeft: 5, color: '#444'}}>Back</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <View style={styles.headerContainer}>
         <Header />
       </View>
       <View style={styles.listContainer}>
-        <Menu />
+        <Menu navigation={navigation} />
       </View>
     </View>
   );

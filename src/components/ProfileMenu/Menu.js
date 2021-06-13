@@ -11,6 +11,8 @@ const ForwardIcon = props => <Icon {...props} name="arrow-ios-forward" />;
 
 const AboutIcon = props => <Icon {...props} name="info-outline" />;
 
+const ClockIcon = props => <Icon {...props} name="clock-outline" />;
+
 const PetIcon = props => (
   <FAIcon
     {...props}
@@ -21,7 +23,7 @@ const PetIcon = props => (
   />
 );
 
-const Menu = () => {
+const Menu = ({navigation}) => {
   const [selectedIndex, setSelectedIndex] = React.useState(null);
 
   return (
@@ -37,6 +39,12 @@ const Menu = () => {
         title="My Pets"
         accessoryLeft={PetIcon}
         accessoryRight={ForwardIcon}
+      />
+      <DrawerItem
+        title="My Appointments"
+        accessoryLeft={ClockIcon}
+        accessoryRight={ForwardIcon}
+        onPress={() => navigation.push('Appointments')}
       />
       <DrawerItem
         title="Contact Us"

@@ -55,7 +55,7 @@ const WalkInBookingForm = ({setIsInMap, setVetData, navigation}) => {
         placeholder="Multiline"
       />
       <Button
-        onPress={() => navigation.push('BookingDetails', {type: 'Walk-In'})}>
+        onPress={() => navigation.push('Booking Details', {type: 'Walk-In'})}>
         CONTINUE
       </Button>
       <Button
