@@ -34,8 +34,8 @@ const style = StyleSheet.create({
     flex: 1,
   },
   avatar: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderRadius: 100,
   },
   avatarContainer: {
@@ -44,8 +44,8 @@ const style = StyleSheet.create({
     top: 10,
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
     alignSelf: 'center',
   },
 });

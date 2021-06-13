@@ -4,13 +4,15 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import ContentTitle from './ContentTitle';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import VetList from './Consultation/VetList';
+import Map from './Consultation/Map';
 
 const Consultation = ({navigation}) => {
-  const [isInTypeSelection, setIsInTypeSelection] = useState(true);
+  const [isInOnline, setIsInOnline] = useState(false);
+  const [isInWalkIn, setIsInWalkIn] = useState(false);
 
   return (
     <View style={styles.container}>
-      {!isInTypeSelection && (
+      {(isInOnline || isInWalkIn) && (
         <TouchableOpacity
           style={{
             marginVertical: 10,
@@ -18,29 +20,31 @@ const Consultation = ({navigation}) => {
             display: 'flex',
             flexDirection: 'row',
           }}
-          onPress={() => setIsInTypeSelection(true)}>
+          onPress={() => {
+            setIsInOnline(false);
+            setIsInWalkIn(false);
+          }}>
           <Icon name="chevron-left" size={23} color="#999" />
           <Text style={{marginLeft: 5, color: '#444'}}>Back</Text>
         </TouchableOpacity>
       )}
 
-      {isInTypeSelection ? (
+      {!isInOnline && !isInWalkIn && (
         <View style={styles.center}>
           <ContentTitle title="Book an Appointment" />
           <View style={styles.btnContainer}>
-            <Button
-              style={styles.btn}
-              onPress={() => setIsInTypeSelection(false)}>
+            <Button style={styles.btn} onPress={() => setIsInOnline(true)}>
               ONLINE CONSULTATION
             </Button>
-            <Button appearance="outline">WALK-IN CONSULTATION</Button>
+            <Button appearance="outline" onPress={() => setIsInWalkIn(true)}>
+              WALK-IN CONSULTATION
+            </Button>
           </View>
         </View>
-      ) : (
-        <View></View>
       )}
 
-      {!isInTypeSelection && <VetList navigation={navigation} />}
+      {isInOnline && <VetList navigation={navigation} />}
+      {isInWalkIn && <Map navigation={navigation} />}
     </View>
   );
 };

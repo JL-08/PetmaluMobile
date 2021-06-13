@@ -24,7 +24,7 @@ const Home = ({navigation}) => {
           flex: 1,
         }}>
         <Header navigation={navigation} />
-        <View style={{flex: 5}}>
+        <View style={{flex: 7}}>
           <Tab.Navigator
             initialRouteName="Home"
             backBehavior="none"
