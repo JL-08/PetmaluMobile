@@ -100,7 +100,7 @@ const Map = ({navigation}) => {
                 </View>
                 <Button
                   style={{alignSelf: 'center', marginTop: 5}}
-                  size="tiny"
+                  size="small"
                   onPress={() => {
                     setIsInMap(false);
                   }}>
