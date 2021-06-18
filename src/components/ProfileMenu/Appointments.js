@@ -48,6 +48,15 @@ const Appointments = () => {
         Note: Booking fee will be completely refuned if the veterinarian cancels
         or did not approve your appointment after 24 hours of booking
       </Text>
+      <Button
+        style={styles.calendarBtn}
+        appearance="outline"
+        size="small"
+        accessoryLeft={props => (
+          <Icon size={20} name="calendar" color="#7068DE" />
+        )}>
+        CHECK IN CALENDAR
+      </Button>
       <List
         style={{backgroundColor: 'rgba(52, 52, 52, 0.0)'}}
         data={data}
@@ -84,6 +93,9 @@ const styles = StyleSheet.create({
   },
   btn: {
     alignSelf: 'flex-start',
+    marginTop: 10,
+  },
+  calendarBtn: {
     marginTop: 10,
   },
 });
