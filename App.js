@@ -53,37 +53,75 @@ const App = () => {
               <Stack.Screen
                 name="Profile Menu"
                 component={ProfileMenu}
-                options={{headerShown: true}}
+                options={{
+                  headerShown: true,
+                }}
               />
               <Stack.Screen
                 name="Booking Details"
                 component={BookingDetails}
-                options={{headerShown: true}}
+                options={{
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: '#7068DE',
+                  },
+                  headerTintColor: '#fff',
+                }}
               />
               <Stack.Screen
                 name="Appointments"
                 component={Appointments}
-                options={{headerShown: true}}
+                options={{
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: '#7068DE',
+                  },
+                  headerTintColor: '#fff',
+                }}
               />
               <Stack.Screen
                 name="Calendar"
                 component={CalendarView}
-                options={{headerShown: true}}
+                options={{
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: '#7068DE',
+                  },
+                  headerTintColor: '#fff',
+                }}
               />
               <Stack.Screen
                 name="My Profile"
                 component={ProfileView}
-                options={{headerShown: true}}
+                options={{
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: '#7068DE',
+                  },
+                  headerTintColor: '#fff',
+                }}
               />
               <Stack.Screen
                 name="My Pets"
                 component={Pets}
-                options={{headerShown: true}}
+                options={{
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: '#7068DE',
+                  },
+                  headerTintColor: '#fff',
+                }}
               />
               <Stack.Screen
                 name="Pet Details"
                 component={PetDetails}
-                options={{headerShown: true}}
+                options={{
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: '#7068DE',
+                  },
+                  headerTintColor: '#fff',
+                }}
               />
             </Stack.Navigator>
           </View>
