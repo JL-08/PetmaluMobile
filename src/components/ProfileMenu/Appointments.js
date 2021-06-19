@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, ImageBackground, Image} from 'react-native';
 import {Text, List, Button} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import ModalView from './ModalView';
 
 const data = new Array(8).fill({
   title: 'Item',
 });
 
 const Appointments = ({navigation}) => {
+  const [visible, setVisible] = useState(false);
+
   const renderItem = info => (
     <View style={{...styles.card, ...styles.row}}>
       <Image
@@ -29,7 +32,10 @@ const Appointments = ({navigation}) => {
             <Text category="p2">01:00 PM - 05:00 PM</Text>
           </View>
         </View>
-        <Button style={styles.btn} size="small">
+        <Button
+          style={styles.btn}
+          size="small"
+          onPress={() => setVisible(true)}>
           DETAILS
         </Button>
       </View>
@@ -63,6 +69,7 @@ const Appointments = ({navigation}) => {
         data={data}
         renderItem={renderItem}
       />
+      <ModalView styles={styles} visible={visible} setVisible={setVisible} />
     </ImageBackground>
   );
 };
