@@ -16,6 +16,7 @@ import {setCustomText} from 'react-native-global-props';
 import ProfileMenu from './src/components/ProfileMenu/ProfileMenu';
 import BookingDetails from './src/components/Home/Consultation/BookingDetails';
 import Appointments from './src/components/ProfileMenu/Appointments';
+import CalendarView from './src/components/ProfileMenu/CalendarView';
 
 const customTextProps = {
   style: {
@@ -59,6 +60,11 @@ const App = () => {
               <Stack.Screen
                 name="Appointments"
                 component={Appointments}
+                options={{headerShown: true}}
+              />
+              <Stack.Screen
+                name="Calendar"
+                component={CalendarView}
                 options={{headerShown: true}}
               />
             </Stack.Navigator>

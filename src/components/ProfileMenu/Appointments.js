@@ -7,7 +7,7 @@ const data = new Array(8).fill({
   title: 'Item',
 });
 
-const Appointments = () => {
+const Appointments = ({navigation}) => {
   const renderItem = info => (
     <View style={{...styles.card, ...styles.row}}>
       <Image
@@ -54,8 +54,9 @@ const Appointments = () => {
         size="small"
         accessoryLeft={props => (
           <Icon size={20} name="calendar" color="#7068DE" />
-        )}>
-        CHECK IN CALENDAR
+        )}
+        onPress={() => navigation.push('Calendar')}>
+        CHECK CALENDAR
       </Button>
       <List
         style={{backgroundColor: 'rgba(52, 52, 52, 0.0)'}}
