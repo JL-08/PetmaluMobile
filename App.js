@@ -17,6 +17,9 @@ import ProfileMenu from './src/components/ProfileMenu/ProfileMenu';
 import BookingDetails from './src/components/Home/Consultation/BookingDetails';
 import Appointments from './src/components/ProfileMenu/Appointments';
 import CalendarView from './src/components/ProfileMenu/CalendarView';
+import ProfileView from './src/components/ProfileMenu/ProfileView';
+import Pets from './src/components/ProfileMenu/Pets';
+import PetDetails from './src/components/ProfileMenu/PetDetails';
 
 const customTextProps = {
   style: {
@@ -48,7 +51,7 @@ const App = () => {
                 options={{headerShown: false}}
               />
               <Stack.Screen
-                name="Profile"
+                name="Profile Menu"
                 component={ProfileMenu}
                 options={{headerShown: true}}
               />
@@ -65,6 +68,21 @@ const App = () => {
               <Stack.Screen
                 name="Calendar"
                 component={CalendarView}
+                options={{headerShown: true}}
+              />
+              <Stack.Screen
+                name="My Profile"
+                component={ProfileView}
+                options={{headerShown: true}}
+              />
+              <Stack.Screen
+                name="My Pets"
+                component={Pets}
+                options={{headerShown: true}}
+              />
+              <Stack.Screen
+                name="Pet Details"
+                component={PetDetails}
                 options={{headerShown: true}}
               />
             </Stack.Navigator>

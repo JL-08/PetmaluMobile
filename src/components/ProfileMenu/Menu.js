@@ -34,11 +34,13 @@ const Menu = ({navigation}) => {
         title="My Profile"
         accessoryLeft={PersonIcon}
         accessoryRight={ForwardIcon}
+        onPress={() => navigation.push('My Profile')}
       />
       <DrawerItem
         title="My Pets"
         accessoryLeft={PetIcon}
         accessoryRight={ForwardIcon}
+        onPress={() => navigation.push('My Pets')}
       />
       <DrawerItem
         title="My Appointments"
