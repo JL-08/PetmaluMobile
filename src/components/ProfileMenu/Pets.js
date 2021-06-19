@@ -30,7 +30,9 @@ const Pets = ({navigation}) => {
         padding: 10,
       }}>
       <List style={styles.list} data={data} renderItem={renderItem} />
-      <Button appearance="outline">ADD PET</Button>
+      <Button appearance="outline" onPress={() => navigation.push('Add a Pet')}>
+        ADD PET
+      </Button>
     </ImageBackground>
   );
 };

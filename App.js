@@ -20,6 +20,7 @@ import CalendarView from './src/components/ProfileMenu/CalendarView';
 import ProfileView from './src/components/ProfileMenu/ProfileView';
 import Pets from './src/components/ProfileMenu/Pets';
 import PetDetails from './src/components/ProfileMenu/PetDetails';
+import AddPet from './src/components/ProfileMenu/AddPet';
 
 const customTextProps = {
   style: {
@@ -115,6 +116,17 @@ const App = () => {
               <Stack.Screen
                 name="Pet Details"
                 component={PetDetails}
+                options={{
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: '#7068DE',
+                  },
+                  headerTintColor: '#fff',
+                }}
+              />
+              <Stack.Screen
+                name="Add a Pet"
+                component={AddPet}
                 options={{
                   headerShown: true,
                   headerStyle: {
