@@ -13,6 +13,8 @@ const AboutIcon = props => <Icon {...props} name="info-outline" />;
 
 const ClockIcon = props => <Icon {...props} name="clock-outline" />;
 
+const LogoutIcon = props => <Icon {...props} name="power-outline" />;
+
 const PetIcon = props => (
   <FAIcon
     {...props}
@@ -57,6 +59,12 @@ const Menu = ({navigation}) => {
         title="About Us"
         accessoryLeft={AboutIcon}
         accessoryRight={ForwardIcon}
+      />
+      <DrawerItem
+        title="Logout"
+        accessoryLeft={LogoutIcon}
+        accessoryRight={ForwardIcon}
+        onPress={() => navigation.reset({index: 0, routes: [{name: 'Auth'}]})}
       />
     </Drawer>
   );
