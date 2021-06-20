@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+
 import PetForm from './PetForm';
 import Verify from './Verify';
 
@@ -14,11 +16,16 @@ import {
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
+import {login} from '../../actions/authActions';
+
 const Auth = ({navigation}) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [isInRegister, setIsInRegister] = useState(false);
   const [isInPetForm, setIsInPetForm] = useState(false);
   const [isInVerify, setIsInVerify] = useState(false);
+  const [loginFormData, setLoginFormData] = useState();
+  const [registerFormData, setRegisterFormData] = useState();
+  const dispatch = useDispatch();
 
   const handleButton = () => {
     if (isInRegister && isInPetForm) {
@@ -27,7 +34,9 @@ const Auth = ({navigation}) => {
       setIsInRegister(false);
       setIsInVerify(true);
     } else if (!isInRegister && !isInVerify) {
-      navigation.reset({index: 0, routes: [{name: 'Home'}]});
+      //navigation.reset({index: 0, routes: [{name: 'Home'}]});
+      //dispatch(login('Hello'));
+      console.log(loginFormData);
     } else if (isInRegister) {
       setIsInPetForm(true);
     } else {
@@ -50,6 +59,16 @@ const Auth = ({navigation}) => {
       setIsInRegister(true);
     }
   };
+
+  const handleChange = (e, name, method) => {
+    if (method === 'login') {
+      setLoginFormData({...loginFormData, [name]: e});
+    }
+    if (method === 'register') {
+      setRegisterFormData({...registerFormData, [name]: e});
+    }
+  };
+
   return (
     <ImageBackground
       source={require('../../images/background.png')}
@@ -95,12 +114,23 @@ const Auth = ({navigation}) => {
                 keyboardType="email-address"
                 textContentType="emailAddress"
                 placeholder="Email Address"
+                onChangeText={e =>
+                  isInRegister
+                    ? handleChange(e, 'email', 'register')
+                    : handleChange(e, 'email', 'login')
+                }
               />
               <View style={styles.passwordContainer}>
                 <TextInput
                   style={styles.passwordInput}
                   textContentType="password"
                   placeholder="Password"
+                  secureTextEntry={isPasswordHidden}
+                  onChangeText={e =>
+                    isInRegister
+                      ? handleChange(e, 'password', 'register')
+                      : handleChange(e, 'password', 'login')
+                  }
                 />
                 <TouchableOpacity
                   style={styles.icon}
