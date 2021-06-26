@@ -5,20 +5,14 @@ let data;
 const authReducer = (state = {authData: null}, action) => {
   switch (action.type) {
     case AUTH:
-      data = {
-        firstName: action?.data?.data?.user?.firstName,
-        lastName: action?.data?.data?.user?.lastName,
-        role: action?.data?.data?.user?.role,
-      };
+      console.log(action.data[0]);
 
-      localStorage.setItem('profile', JSON.stringify(data));
       return {
         ...state,
-        authData: {...data, token: action?.data?.token},
+        authData: {...action.data[0], role: 'user'},
       };
 
     case LOGOUT:
-      localStorage.clear();
       return {...state, authData: null};
 
     case GET_AUTH:

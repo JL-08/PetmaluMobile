@@ -13,7 +13,7 @@ import {
   Input,
 } from '@ui-kitten/components';
 
-const WalkInBookingForm = ({setIsInMap, setVetData, navigation}) => {
+const WalkInBookingForm = ({setIsInMap, vetData, setVetData, navigation}) => {
   const [date, setDate] = React.useState(new Date());
   const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
 
@@ -28,12 +28,13 @@ const WalkInBookingForm = ({setIsInMap, setVetData, navigation}) => {
         />
         <View style={styles.margin}>
           <Text style={styles.name} category="h6">
-            Dr. Shan Valdez
+            Dr. {vetData.name}
           </Text>
           <Text category="s2">Doctor of Veterinary Medicine</Text>
         </View>
       </View>
       <Datepicker
+        style={styles.margin}
         label="Date"
         placeholder="Pick Date"
         date={date}
@@ -41,6 +42,7 @@ const WalkInBookingForm = ({setIsInMap, setVetData, navigation}) => {
         accessoryRight={CalendarIcon}
       />
       <Select
+        style={styles.margin}
         label="Select Pet"
         selectedIndex={selectedIndex}
         onSelect={index => setSelectedIndex(index)}>
@@ -49,6 +51,7 @@ const WalkInBookingForm = ({setIsInMap, setVetData, navigation}) => {
         <SelectItem title="Option 3" />
       </Select>
       <Input
+        style={styles.margin}
         label="Reason of Consultation"
         multiline={true}
         textStyle={{minHeight: 64}}

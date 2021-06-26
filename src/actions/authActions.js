@@ -27,12 +27,33 @@ export const register =
     }
   };
 
-export const login = formData => async dispatch => {
-  try {
-    const {data} = await api.login(formData);
+export const login =
+  (
+    formData,
+    setServerMessage,
+    setIsRequestComplete,
+    setHasRequestError,
+    setIsLoading,
+    navigation,
+  ) =>
+  async dispatch => {
+    try {
+      const {data} = await api.login(formData);
+      setIsLoading(false);
 
-    dispatch({type: AUTH, data});
-  } catch (err) {
-    console.log(err);
-  }
-};
+      if (
+        data.includes(
+          'Incorrect email or password' || data.includes('Connection Failed'),
+        )
+      ) {
+        setServerMessage(data);
+        setIsRequestComplete(true);
+        setHasRequestError(true);
+      } else {
+        dispatch({type: AUTH, data});
+        navigation.reset({index: 0, routes: [{name: 'Home'}]});
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };

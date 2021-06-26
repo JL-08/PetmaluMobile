@@ -1,6 +1,13 @@
-import {Button} from '@ui-kitten/components';
-import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
+import {Button, Card, Modal} from '@ui-kitten/components';
+
 import ContentTitle from './ContentTitle';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import VetList from './Consultation/VetList';
@@ -9,6 +16,7 @@ import Map from './Consultation/Map';
 const Consultation = ({navigation}) => {
   const [isInOnline, setIsInOnline] = useState(false);
   const [isInWalkIn, setIsInWalkIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -43,8 +51,18 @@ const Consultation = ({navigation}) => {
         </View>
       )}
 
-      {isInOnline && <VetList navigation={navigation} />}
-      {isInWalkIn && <Map navigation={navigation} />}
+      {isInOnline && (
+        <VetList navigation={navigation} setIsLoading={setIsLoading} />
+      )}
+      {isInWalkIn && (
+        <Map navigation={navigation} setIsLoading={setIsLoading} />
+      )}
+
+      <Modal visible={isLoading}>
+        <Card disabled={true}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </Card>
+      </Modal>
     </View>
   );
 };

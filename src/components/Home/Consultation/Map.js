@@ -1,12 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 import {Text, Button} from '@ui-kitten/components';
 import WalkInBookingForm from './WalkInBookingForm';
 
-const Map = ({navigation}) => {
+import {getAllVets} from '../../../actions/vetActions';
+import MapMarker from './MapMarker';
+
+const Map = ({navigation, setIsLoading}) => {
+  const dispatch = useDispatch();
+  const vetList = useSelector(state => state.vet.authData);
   const [position, setPosition] = useState({
     latitude: 10,
     longitude: 10,
@@ -19,7 +25,6 @@ const Map = ({navigation}) => {
   useEffect(() => {
     Geolocation.getCurrentPosition(
       position => {
-        console.log(position);
         setPosition({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -34,13 +39,17 @@ const Map = ({navigation}) => {
     );
   }, []);
 
-  const MapIcon = () => <Icon name="map-marker-alt" size={20} />;
+  useEffect(() => {
+    setIsLoading(true);
+    dispatch(getAllVets(setIsLoading));
+  }, []);
 
   return (
     <View>
       {!isInMap && (
         <WalkInBookingForm
           setIsInMap={setIsInMap}
+          vetData={vetData}
           setVetData={setVetData}
           navigation={navigation}
         />
@@ -54,25 +63,14 @@ const Map = ({navigation}) => {
             initialRegion={position}
             showsUserLocation={true}
             showsMyLocationButton={true}>
-            <Marker
-              title="Clinic 1"
-              icon={MapIcon}
-              coordinate={{
-                latitude: position.latitude,
-                longitude: position.longitude + 0.0004,
-              }}
-              onPress={() => setVetData('Vet 1')}
-            />
-
-            <Marker
-              title="Clinic 2"
-              icon={MapIcon}
-              coordinate={{
-                latitude: position.latitude + 0.0004,
-                longitude: position.longitude,
-              }}
-              onPress={() => setVetData('Vet 2')}
-            />
+            {vetList &&
+              vetList.map(vet => (
+                <MapMarker
+                  vet={vet}
+                  key={vet.clinic_id}
+                  setVetData={setVetData}
+                />
+              ))}
           </MapView>
 
           {vetData && (
@@ -83,7 +81,7 @@ const Map = ({navigation}) => {
               />
               <View>
                 <Text style={styles.vetName} category="h6">
-                  {vetData}
+                  {vetData.name}
                 </Text>
                 <Text category="s1">Doctor of Veterinary Medicine</Text>
                 <View style={{...styles.row, marginTop: 10}}>
@@ -93,13 +91,12 @@ const Map = ({navigation}) => {
                     size={20}
                     color="#555"
                   />
-                  <View>
-                    <Text category="c1">Unit 70, 7th floor, Medical Condo</Text>
-                    <Text category="c1">Clinic Medicus Medical Center</Text>
+                  <View style={{maxWidth: '80%'}}>
+                    <Text category="c1">{vetData.location}</Text>
                   </View>
                 </View>
                 <Button
-                  style={{alignSelf: 'center', marginTop: 5}}
+                  style={{alignSelf: 'flex-start', marginTop: 8}}
                   size="small"
                   onPress={() => {
                     setIsInMap(false);

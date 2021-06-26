@@ -69,9 +69,17 @@ const Auth = ({navigation}) => {
         ),
       );
     } else if (!isInRegister && !isInVerify) {
-      // dispatch(login('Hello'));
-      navigation.reset({index: 0, routes: [{name: 'Home'}]});
-      // console.log(loginFormData);
+      dispatch(
+        login(
+          loginFormData,
+          setServerMessage,
+          setIsRequestComplete,
+          setHasRequestError,
+          setIsLoading,
+          navigation,
+        ),
+      );
+      // navigation.reset({index: 0, routes: [{name: 'Home'}]});
     } else if (isInRegister) {
       setIsInPetForm(true);
     } else {
@@ -117,7 +125,7 @@ const Auth = ({navigation}) => {
   const handleModalButton = () => {
     setIsRequestComplete(false);
 
-    if (!hasRequestError) {
+    if (!hasRequestError && isInRegister(true)) {
       goToVerify();
     }
   };
