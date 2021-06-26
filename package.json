@@ -27,6 +27,7 @@
     "react-native": "0.64.2",
     "react-native-calendar-picker": "^7.1.2",
     "react-native-calendario": "^2.1.2",
+    "react-native-date-picker": "^3.3.2",
     "react-native-geolocation-service": "*",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-global-props": "^1.1.5",

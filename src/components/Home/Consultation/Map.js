@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, memo, useCallback, useRef} from 'react';
 import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
@@ -13,14 +13,16 @@ import MapMarker from './MapMarker';
 const Map = ({navigation, setIsLoading}) => {
   const dispatch = useDispatch();
   const vetList = useSelector(state => state.vet.authData);
-  const [position, setPosition] = useState({
-    latitude: 10,
-    longitude: 10,
-    latitudeDelta: 0.001,
-    longitudeDelta: 0.001,
-  });
+  const [position, setPosition] = useState();
   const [vetData, setVetData] = useState();
   const [isInMap, setIsInMap] = useState(true);
+  const [isMapReady, setMapReady] = useState(false);
+
+  const mapRef = useRef(null);
+
+  const handleMapReady = useCallback(() => {
+    setMapReady(true);
+  }, [mapRef, setMapReady]);
 
   useEffect(() => {
     Geolocation.getCurrentPosition(
@@ -35,7 +37,6 @@ const Map = ({navigation, setIsLoading}) => {
       error => {
         console.log(error.code, error.message);
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
   }, []);
 
@@ -52,17 +53,21 @@ const Map = ({navigation, setIsLoading}) => {
           vetData={vetData}
           setVetData={setVetData}
           navigation={navigation}
+          setIsLoading={setIsLoading}
         />
       )}
 
       {isInMap && (
         <>
           <MapView
-            style={styles.map}
+            style={isMapReady ? styles.map : {}}
+            ref={mapRef}
             provider={PROVIDER_GOOGLE}
             initialRegion={position}
             showsUserLocation={true}
-            showsMyLocationButton={true}>
+            zoomControlEnabled
+            showsMyLocationButton={true}
+            onMapReady={handleMapReady}>
             {vetList &&
               vetList.map(vet => (
                 <MapMarker
@@ -100,8 +105,9 @@ const Map = ({navigation, setIsLoading}) => {
                   size="small"
                   onPress={() => {
                     setIsInMap(false);
+                    setMapReady(false);
                   }}>
-                  BOOK NOW
+                  BOOK APPOINTMENT
                 </Button>
               </View>
             </View>
@@ -116,6 +122,7 @@ const styles = StyleSheet.create({
   map: {
     minHeight: '65%',
     marginBottom: 5,
+    flex: 1,
   },
   vetName: {
     fontWeight: 'bold',

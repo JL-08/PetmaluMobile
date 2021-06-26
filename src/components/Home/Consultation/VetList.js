@@ -4,26 +4,47 @@ import {
   List,
   Datepicker,
   Icon,
-  IndexPath,
   Select,
   SelectItem,
   Input,
+  Modal,
+  Card,
 } from '@ui-kitten/components';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import FAIcon from 'react-native-vector-icons/dist/FontAwesome';
+import {default as TimePicker} from 'react-native-date-picker';
+import moment from 'moment';
 
-const data = new Array(8).fill({
-  title: 'Item',
-});
+import {getAllVets} from '../../../actions/vetActions';
+import {getAllUserPets} from '../../../actions/petActons';
 
-const VetList = ({navigation}) => {
+const VetList = ({navigation, setIsLoading}) => {
   const [isInList, setIsInList] = useState(true);
-  const [selectedItem, setSelectedItem] = useState({});
-  const [date, setDate] = React.useState(new Date());
-  const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
+  const [selectedVet, setSelectedVet] = useState({});
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
+  const [isEditingTime, setIsEditingTime] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.authData);
+  const vetList = useSelector(state => state.vet.authData);
+  const petList = useSelector(state => state.pet.petData);
 
   const CalendarIcon = props => <Icon {...props} name="calendar" />;
+
+  useEffect(() => {
+    setIsLoading(true);
+    dispatch(getAllVets(setIsLoading));
+  }, []);
+
+  const handleBookBtn = info => {
+    setIsLoading(true);
+    setIsInList(false);
+    setSelectedVet(info);
+    dispatch(getAllUserPets(user.user_id, setIsLoading));
+  };
 
   const renderItem = info => (
     <View style={styles.container}>
@@ -38,7 +59,8 @@ const VetList = ({navigation}) => {
         <View>
           <View style={styles.margin}>
             <Text style={styles.name} category="h6">
-              Dr. Shan Valdez
+              Dr. {info.item.name}
+              {console.log(info)}
             </Text>
             <Text category="s2">Doctor of Veterinary Medicine</Text>
           </View>
@@ -62,9 +84,12 @@ const VetList = ({navigation}) => {
               <Text category="p1">Online consultation</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.margin}>
+          {/* <TouchableOpacity style={styles.margin}>
             <Text style={styles.clinicText}>See Clinic</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <View style={{...styles.location, ...styles.margin}}>
+            <Text>{info.item.location}</Text>
+          </View>
           <View style={styles.row}>
             <View style={styles.center}>
               <FAIcon name="clock-o" color="#888" size={25} />
@@ -75,10 +100,7 @@ const VetList = ({navigation}) => {
             </View>
           </View>
           <Button
-            onPress={() => {
-              setIsInList(false);
-              setSelectedItem(info);
-            }}
+            onPress={() => handleBookBtn(info.item)}
             style={styles.btn}
             size="small">
             BOOK APPOINTMENT
@@ -89,11 +111,11 @@ const VetList = ({navigation}) => {
   );
 
   return (
-    <View>
+    <View style={{paddingBottom: 20}}>
       {isInList ? (
         <List
           contentContainerStyle={styles.contentContainer}
-          data={data}
+          data={vetList}
           renderItem={renderItem}
         />
       ) : (
@@ -106,43 +128,68 @@ const VetList = ({navigation}) => {
             />
             <View style={styles.margin}>
               <Text style={styles.name} category="h6">
-                Dr. Shan Valdez
+                Dr. {selectedVet.name}
               </Text>
               <Text category="s2">Doctor of Veterinary Medicine</Text>
             </View>
           </View>
           <Datepicker
+            style={styles.margin}
             label="Date"
             placeholder="Pick Date"
             date={date}
             onSelect={nextDate => setDate(nextDate)}
             accessoryRight={CalendarIcon}
           />
+          <Text style={{...styles.labelColor, fontSize: 12}}>Time</Text>
+          <TouchableOpacity
+            style={styles.timeTouch}
+            onPress={() => setIsEditingTime(true)}>
+            <Text style={styles.labelColor}>{moment(time).format('LT')}</Text>
+          </TouchableOpacity>
           <Select
+            style={styles.margin}
             label="Select Pet"
-            selectedIndex={selectedIndex}
-            onSelect={index => setSelectedIndex(index)}>
-            <SelectItem title="Option 1" />
-            <SelectItem title="Option 2" />
-            <SelectItem title="Option 3" />
+            onSelect={index => setSelectedIndex(index.row)}
+            value={petList ? petList[selectedIndex].name : '--'}>
+            {petList &&
+              petList.map(pet => <SelectItem title={pet.name} key={pet.id} />)}
           </Select>
           <Input
+            style={styles.margin}
             label="Reason of Consultation"
             multiline={true}
             textStyle={{minHeight: 64}}
             placeholder="Multiline"
           />
-          <Button
-            onPress={() =>
-              navigation.push('Booking Details', {type: 'Online'})
-            }>
-            CONTINUE
-          </Button>
-          <Button onPress={() => setIsInList(true)} appearance="ghost">
-            CANCEL
-          </Button>
+          <View style={styles.row}>
+            <Button
+              style={{flex: 1}}
+              onPress={() =>
+                navigation.push('Booking Details', {type: 'Online'})
+              }>
+              CONTINUE
+            </Button>
+            <Button onPress={() => setIsInList(true)} appearance="ghost">
+              CANCEL
+            </Button>
+          </View>
         </View>
       )}
+      <Modal visible={isEditingTime}>
+        <Card disabled={true}>
+          <View>
+            <TimePicker
+              date={time}
+              mode="time"
+              onDateChange={e => setTime(e)}
+            />
+          </View>
+          <Button onPress={() => setIsEditingTime(false)} size="small">
+            OK
+          </Button>
+        </Card>
+      </Modal>
     </View>
   );
 };
@@ -190,8 +237,19 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginTop: 20,
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
     borderRadius: 50,
+  },
+  location: {
+    maxWidth: '80%',
+  },
+  timeTouch: {
+    backgroundColor: '#F7F9FC',
+    padding: 10,
+    marginBottom: 10,
+  },
+  labelColor: {
+    color: '#777',
   },
 });
 

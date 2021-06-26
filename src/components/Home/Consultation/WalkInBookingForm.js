@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import FAIcon from 'react-native-vector-icons/dist/FontAwesome';
 import {
@@ -11,13 +12,35 @@ import {
   Select,
   SelectItem,
   Input,
+  Modal,
+  Card,
 } from '@ui-kitten/components';
+import {default as TimePicker} from 'react-native-date-picker';
+import moment from 'moment';
 
-const WalkInBookingForm = ({setIsInMap, vetData, setVetData, navigation}) => {
-  const [date, setDate] = React.useState(new Date());
-  const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
+import {getAllUserPets} from '../../../actions/petActons';
+
+const WalkInBookingForm = ({
+  setIsInMap,
+  vetData,
+  setVetData,
+  navigation,
+  setIsLoading,
+}) => {
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isEditingTime, setIsEditingTime] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.authData);
+  const pets = useSelector(state => state.pet.petData);
 
   const CalendarIcon = props => <Icon {...props} name="calendar" />;
+
+  useEffect(() => {
+    setIsLoading(true);
+    dispatch(getAllUserPets(user.user_id, setIsLoading));
+  }, []);
 
   return (
     <View>
@@ -41,34 +64,62 @@ const WalkInBookingForm = ({setIsInMap, vetData, setVetData, navigation}) => {
         onSelect={nextDate => setDate(nextDate)}
         accessoryRight={CalendarIcon}
       />
+      <Text style={{...styles.labelColor, fontSize: 12}}>Time</Text>
+      <TouchableOpacity
+        style={styles.timeTouch}
+        onPress={() => setIsEditingTime(true)}>
+        {/* <Input
+          style={styles.margin}
+          label="Time"
+          placeholder="00:00"
+          //</View>onFocus={() => setIsEditingTime(true)}
+        /> */}
+        <Text style={styles.labelColor}>{moment(time).format('LT')}</Text>
+      </TouchableOpacity>
       <Select
         style={styles.margin}
         label="Select Pet"
-        selectedIndex={selectedIndex}
-        onSelect={index => setSelectedIndex(index)}>
-        <SelectItem title="Option 1" />
-        <SelectItem title="Option 2" />
-        <SelectItem title="Option 3" />
+        onSelect={index => setSelectedIndex(index.row)}
+        value={pets ? pets[selectedIndex].name : '--'}>
+        {pets && pets.map(pet => <SelectItem title={pet.name} key={pet.id} />)}
       </Select>
       <Input
         style={styles.margin}
         label="Reason of Consultation"
         multiline={true}
         textStyle={{minHeight: 64}}
-        placeholder="Multiline"
+        placeholder="your message here..."
       />
-      <Button
-        onPress={() => navigation.push('Booking Details', {type: 'Walk-In'})}>
-        CONTINUE
-      </Button>
-      <Button
-        onPress={() => {
-          setIsInMap(true);
-          setVetData();
-        }}
-        appearance="ghost">
-        CANCEL
-      </Button>
+      <View style={styles.row}>
+        <Button
+          style={{flex: 1}}
+          onPress={() => navigation.push('Booking Details', {type: 'Walk-In'})}>
+          CONTINUE
+        </Button>
+        <Button
+          onPress={() => {
+            setIsInMap(true);
+            setVetData();
+          }}
+          appearance="ghost">
+          CANCEL
+        </Button>
+      </View>
+
+      <Modal visible={isEditingTime}>
+        <Card disabled={true}>
+          <View>
+            <TimePicker
+              date={time}
+              mode="time"
+              onDateChange={e => setTime(e)}
+            />
+          </View>
+          <Button onPress={() => setIsEditingTime(false)} appearance="ghost">
+            OK
+          </Button>
+        </Card>
+      </Modal>
     </View>
   );
 };
@@ -85,6 +136,17 @@ const styles = StyleSheet.create({
   },
   name: {
     fontWeight: 'bold',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  timeTouch: {
+    backgroundColor: '#F7F9FC',
+    padding: 10,
+    marginBottom: 10,
+  },
+  labelColor: {
+    color: '#777',
   },
 });
 
