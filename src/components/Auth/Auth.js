@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-
+import {Button, Card, Layout, Modal} from '@ui-kitten/components';
 import PetForm from './PetForm';
 import Verify from './Verify';
 
@@ -12,31 +12,66 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-import {login} from '../../actions/authActions';
+import {login, register} from '../../actions/authActions';
+
+const initialLoginData = {
+  email: '',
+  password: '',
+};
+
+const initialRegisterData = {
+  email: '',
+  password: '',
+  name: '',
+  mobile_num: '',
+};
+
+const initialPetData = {
+  pet_name: '',
+  age: '',
+  type: 'dog',
+  breed: '',
+  height: '',
+  weight: '',
+};
 
 const Auth = ({navigation}) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [isInRegister, setIsInRegister] = useState(false);
   const [isInPetForm, setIsInPetForm] = useState(false);
   const [isInVerify, setIsInVerify] = useState(false);
-  const [loginFormData, setLoginFormData] = useState();
-  const [registerFormData, setRegisterFormData] = useState();
+  const [loginFormData, setLoginFormData] = useState(initialLoginData);
+  const [registerFormData, setRegisterFormData] = useState(initialRegisterData);
+  const [petFormData, setPetFormData] = useState(initialPetData);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRequestComplete, setIsRequestComplete] = useState(false);
+  const [serverMessage, setServerMessage] = useState();
+  const [hasRequestError, setHasRequestError] = useState(false);
   const dispatch = useDispatch();
 
   const handleButton = () => {
     if (isInRegister && isInPetForm) {
       console.log('submit registration');
-      setIsInPetForm(false);
-      setIsInRegister(false);
-      setIsInVerify(true);
+      setIsLoading(true);
+      dispatch(
+        register(
+          registerFormData,
+          petFormData,
+          setServerMessage,
+          setIsRequestComplete,
+          setHasRequestError,
+          setIsLoading,
+        ),
+      );
     } else if (!isInRegister && !isInVerify) {
-      //navigation.reset({index: 0, routes: [{name: 'Home'}]});
-      //dispatch(login('Hello'));
-      console.log(loginFormData);
+      // dispatch(login('Hello'));
+      navigation.reset({index: 0, routes: [{name: 'Home'}]});
+      // console.log(loginFormData);
     } else if (isInRegister) {
       setIsInPetForm(true);
     } else {
@@ -60,6 +95,13 @@ const Auth = ({navigation}) => {
     }
   };
 
+  const goToVerify = () => {
+    setIsInPetForm(false);
+    setIsInRegister(false);
+    setIsInVerify(true);
+    clearFields();
+  };
+
   const handleChange = (e, name, method) => {
     if (method === 'login') {
       setLoginFormData({...loginFormData, [name]: e});
@@ -67,8 +109,24 @@ const Auth = ({navigation}) => {
     if (method === 'register') {
       setRegisterFormData({...registerFormData, [name]: e});
     }
+    if (method === 'petRegister') {
+      setPetFormData({...petFormData, [name]: e});
+    }
   };
 
+  const handleModalButton = () => {
+    setIsRequestComplete(false);
+
+    if (!hasRequestError) {
+      goToVerify();
+    }
+  };
+
+  const clearFields = () => {
+    setLoginFormData(initialLoginData);
+    setRegisterFormData(initialRegisterData);
+    setPetFormData(initialPetData);
+  };
   return (
     <ImageBackground
       source={require('../../images/background.png')}
@@ -100,9 +158,11 @@ const Auth = ({navigation}) => {
             <>
               <Text style={styles.heading}>User Details</Text>
               <TextInput
+                value={registerFormData['name']}
                 style={styles.input}
                 textContentType="name"
                 placeholder="Full Name"
+                onChangeText={e => handleChange(e, 'name', 'register')}
               />
             </>
           )}
@@ -110,6 +170,11 @@ const Auth = ({navigation}) => {
           {!isInPetForm && !isInVerify && (
             <>
               <TextInput
+                value={
+                  isInRegister
+                    ? registerFormData['email']
+                    : loginFormData['email']
+                }
                 style={styles.input}
                 keyboardType="email-address"
                 textContentType="emailAddress"
@@ -122,6 +187,11 @@ const Auth = ({navigation}) => {
               />
               <View style={styles.passwordContainer}>
                 <TextInput
+                  value={
+                    isInRegister
+                      ? registerFormData['password']
+                      : loginFormData['password']
+                  }
                   style={styles.passwordInput}
                   textContentType="password"
                   placeholder="Password"
@@ -149,15 +219,23 @@ const Auth = ({navigation}) => {
             <>
               {!isInPetForm && (
                 <TextInput
+                  value={registerFormData['mobile_num']}
                   style={styles.input}
                   keyboardType="numeric"
                   textContentType="telephoneNumber"
-                  placeholder="Contact Number"
+                  placeholder="Mobile Number"
+                  maxLength={11}
+                  onChangeText={e => handleChange(e, 'mobile_num', 'register')}
                 />
               )}
 
               {isInPetForm && (
-                <PetForm styleSheet={styles} setIsInPetForm={setIsInPetForm} />
+                <PetForm
+                  styleSheet={styles}
+                  petFormData={petFormData}
+                  setIsInPetForm={setIsInPetForm}
+                  handleChange={handleChange}
+                />
               )}
             </>
           )}
@@ -204,6 +282,26 @@ const Auth = ({navigation}) => {
           </View>
         </View>
       </View>
+
+      <Modal visible={isRequestComplete}>
+        <Card disabled={true} style={styles.modal}>
+          <View style={styles.modalText}>
+            <Text>{serverMessage}</Text>
+          </View>
+          <Button
+            onPress={handleModalButton}
+            style={styles.modalBtn}
+            size="small">
+            OK
+          </Button>
+        </Card>
+      </Modal>
+
+      <Modal visible={isLoading}>
+        <Card disabled={true}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </Card>
+      </Modal>
     </ImageBackground>
   );
 };
@@ -279,6 +377,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 10,
+  },
+  modal: {
+    minHeight: 200,
+    justifyContent: 'center',
+    alignContent: 'center',
+    borderWidth: 5,
+  },
+  modalText: {
+    height: 150,
+    justifyContent: 'center',
   },
 });
 
