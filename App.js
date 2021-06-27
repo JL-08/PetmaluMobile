@@ -31,6 +31,8 @@ import VetHome from './src/components/Vet/VetHome';
 import VetProfileMenu from './src/components/Vet/ProfileMenu/ProfileMenu';
 import CreatePost from './src/components/Vet/CreatePost';
 import EditPost from './src/components/Vet/EditPost';
+import History from './src/components/Vet/ProfileMenu/History';
+import VetProfileView from './src/components/Vet/ProfileMenu/VetProfileView';
 
 const customTextProps = {
   style: {
@@ -184,6 +186,28 @@ const App = () => {
                 <Stack.Screen
                   name="Edit Post"
                   component={EditPost}
+                  options={{
+                    headerShown: true,
+                    headerStyle: {
+                      backgroundColor: '#7068DE',
+                    },
+                    headerTintColor: '#fff',
+                  }}
+                />
+                <Stack.Screen
+                  name="Appointment History"
+                  component={History}
+                  options={{
+                    headerShown: true,
+                    headerStyle: {
+                      backgroundColor: '#7068DE',
+                    },
+                    headerTintColor: '#fff',
+                  }}
+                />
+                <Stack.Screen
+                  name="Vet Profile"
+                  component={VetProfileView}
                   options={{
                     headerShown: true,
                     headerStyle: {

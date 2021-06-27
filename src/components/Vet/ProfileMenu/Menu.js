@@ -36,13 +36,13 @@ const Menu = ({navigation}) => {
         title="My Profile"
         accessoryLeft={PersonIcon}
         accessoryRight={ForwardIcon}
-        onPress={() => navigation.push('My Profile')}
+        onPress={() => navigation.push('Vet Profile')}
       />
       <DrawerItem
         title="History"
         accessoryLeft={ClockIcon}
         accessoryRight={ForwardIcon}
-        onPress={() => navigation.push('Appointments')}
+        onPress={() => navigation.push('Appointment History')}
       />
       <DrawerItem
         title="Contact Us"
