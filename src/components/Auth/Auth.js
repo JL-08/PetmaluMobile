@@ -17,7 +17,8 @@ import {
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-import {login, register} from '../../actions/authActions';
+import {login, register, verify} from '../../actions/authActions';
+import {set} from 'react-native-reanimated';
 
 const initialLoginData = {
   email: '',
@@ -48,16 +49,19 @@ const Auth = ({navigation}) => {
   const [loginFormData, setLoginFormData] = useState(initialLoginData);
   const [registerFormData, setRegisterFormData] = useState(initialRegisterData);
   const [petFormData, setPetFormData] = useState(initialPetData);
+  const [userEmail, setUserEmail] = useState(initialRegisterData);
+  const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRequestComplete, setIsRequestComplete] = useState(false);
   const [serverMessage, setServerMessage] = useState();
   const [hasRequestError, setHasRequestError] = useState(false);
+  const [hasFormError, setHasFormError] = useState(false);
   const dispatch = useDispatch();
 
-  const handleButton = () => {
+  const handleButton = async () => {
     if (isInRegister && isInPetForm) {
-      console.log('submit registration');
       setIsLoading(true);
+      setUserEmail(registerFormData.email);
       dispatch(
         register(
           registerFormData,
@@ -69,6 +73,8 @@ const Auth = ({navigation}) => {
         ),
       );
     } else if (!isInRegister && !isInVerify) {
+      setIsLoading(true);
+      setUserEmail(loginFormData.email);
       dispatch(
         login(
           loginFormData,
@@ -77,6 +83,7 @@ const Auth = ({navigation}) => {
           setHasRequestError,
           setIsLoading,
           navigation,
+          goToVerify,
         ),
       );
       // navigation.reset({index: 0, routes: [{name: 'Home'}]});
@@ -84,9 +91,17 @@ const Auth = ({navigation}) => {
       setIsInPetForm(true);
     } else {
       console.log('verify here');
-      setIsInRegister(false);
-      setIsInPetForm(false);
-      setIsInVerify(false);
+      setIsLoading(true);
+      dispatch(
+        verify(
+          {email: userEmail, code},
+          setServerMessage,
+          setIsRequestComplete,
+          setHasRequestError,
+          setIsLoading,
+          goToLogin,
+        ),
+      );
     }
   };
 
@@ -94,10 +109,12 @@ const Auth = ({navigation}) => {
     if (isInRegister && !isInVerify) {
       setIsInRegister(false);
       setIsInPetForm(false);
+      clearFields();
     } else if (isInVerify) {
       setIsInRegister(false);
       setIsInPetForm(false);
       setIsInVerify(false);
+      clearFields();
     } else {
       setIsInRegister(true);
     }
@@ -108,6 +125,12 @@ const Auth = ({navigation}) => {
     setIsInRegister(false);
     setIsInVerify(true);
     clearFields();
+  };
+
+  const goToLogin = () => {
+    setIsInRegister(false);
+    setIsInPetForm(false);
+    setIsInVerify(false);
   };
 
   const handleChange = (e, name, method) => {
@@ -125,7 +148,8 @@ const Auth = ({navigation}) => {
   const handleModalButton = () => {
     setIsRequestComplete(false);
 
-    if (!hasRequestError && isInRegister(true)) {
+    console.log(hasRequestError, hasFormError, isInRegister);
+    if (!hasRequestError && !hasFormError && isInRegister) {
       goToVerify();
     }
   };
@@ -135,6 +159,7 @@ const Auth = ({navigation}) => {
     setRegisterFormData(initialRegisterData);
     setPetFormData(initialPetData);
   };
+
   return (
     <ImageBackground
       source={require('../../images/background.png')}
@@ -161,7 +186,9 @@ const Auth = ({navigation}) => {
               ? 'Verify Your Account'
               : 'Login'}
           </Text>
-          {isInVerify && <Verify />}
+          {isInVerify && (
+            <Verify email={userEmail} code={code} setCode={setCode} />
+          )}
           {isInRegister && !isInPetForm && (
             <>
               <Text style={styles.heading}>User Details</Text>
@@ -288,6 +315,24 @@ const Auth = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {!isInRegister && !isInVerify && (
+            <View style={styles.switchContainer}>
+              <Text Text style={{color: '#44609D'}}>
+                For veterinarians,
+              </Text>
+              <TouchableOpacity onPress={() => navigation.push('Login as Vet')}>
+                <Text
+                  style={{
+                    marginLeft: 5,
+                    color: '#44609D',
+                    fontWeight: '700',
+                  }}>
+                  Login here
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
 

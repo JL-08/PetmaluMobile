@@ -1,4 +1,4 @@
-import {AUTH, GOOGLE_AUTH, LOGOUT, GET_AUTH} from '../constants/actionTypes';
+import {AUTH, LOGOUT, VERIFY} from '../constants/actionTypes';
 
 let data;
 
@@ -15,7 +15,7 @@ const authReducer = (state = {authData: null}, action) => {
     case LOGOUT:
       return {...state, authData: null};
 
-    case GET_AUTH:
+    case VERIFY:
       return {
         ...state,
         authData: JSON.parse(localStorage.getItem('profile')),

@@ -8,3 +8,4 @@ export const login = formData => API.post('/login.php', formData);
 export const getAllVets = () => API.get('/getAllVets.php');
 export const getAllUserPets = user_id =>
   API.post('/getUserPets.php', {user_id});
+export const verify = formData => API.post('/verify.php', formData);

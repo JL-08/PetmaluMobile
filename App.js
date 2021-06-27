@@ -26,6 +26,7 @@ import ProfileView from './src/components/ProfileMenu/ProfileView';
 import Pets from './src/components/ProfileMenu/Pets';
 import PetDetails from './src/components/ProfileMenu/PetDetails';
 import AddPet from './src/components/ProfileMenu/AddPet';
+import VetLogin from './src/components/Vet/VetLogin';
 
 const customTextProps = {
   style: {
@@ -52,6 +53,17 @@ const App = () => {
                   name="Auth"
                   component={Auth}
                   options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name="Login as Vet"
+                  component={VetLogin}
+                  options={{
+                    headerShown: true,
+                    headerStyle: {
+                      backgroundColor: '#44609D',
+                    },
+                    headerTintColor: 'white',
+                  }}
                 />
                 <Stack.Screen
                   name="Home"
