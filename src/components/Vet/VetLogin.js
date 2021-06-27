@@ -16,7 +16,7 @@ const initialLoginData = {
   password: '',
 };
 
-const VetLogin = () => {
+const VetLogin = ({navigation}) => {
   const [vetFormData, setVetFormData] = useState(initialLoginData);
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const handleChange = (e, name) => {
@@ -70,7 +70,11 @@ const VetLogin = () => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() =>
+              navigation.reset({index: 0, routes: [{name: 'Vet Home'}]})
+            }>
             <Text style={styles.btnText}>LOGIN</Text>
           </TouchableOpacity>
         </View>

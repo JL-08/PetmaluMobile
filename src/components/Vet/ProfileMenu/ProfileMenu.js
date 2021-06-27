@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  ImageBackground,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import {StyleSheet, View} from 'react-native';
 
 import Header from './Header';
 import Menu from './Menu';

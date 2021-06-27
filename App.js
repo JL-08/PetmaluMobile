@@ -27,6 +27,8 @@ import Pets from './src/components/ProfileMenu/Pets';
 import PetDetails from './src/components/ProfileMenu/PetDetails';
 import AddPet from './src/components/ProfileMenu/AddPet';
 import VetLogin from './src/components/Vet/VetLogin';
+import VetHome from './src/components/Vet/VetHome';
+import VetProfileMenu from './src/components/Vet/ProfileMenu/ProfileMenu';
 
 const customTextProps = {
   style: {
@@ -71,8 +73,20 @@ const App = () => {
                   options={{headerShown: false}}
                 />
                 <Stack.Screen
+                  name="Vet Home"
+                  component={VetHome}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
                   name="Profile Menu"
                   component={ProfileMenu}
+                  options={{
+                    headerShown: true,
+                  }}
+                />
+                <Stack.Screen
+                  name="Vet Profile Menu"
+                  component={VetProfileMenu}
                   options={{
                     headerShown: true,
                   }}
