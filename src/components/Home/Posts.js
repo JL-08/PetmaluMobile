@@ -10,6 +10,15 @@ const data = new Array(8).fill({
 const Posts = () => {
   const renderItemHeader = (headerProps, info) => (
     <View {...headerProps}>
+      <View style={styles.row}>
+        <Text style={{fontWeight: 'bold', flex: 1}} category="h6">
+          Title 1
+        </Text>
+        <Text style={{color: '#888', alignSelf: 'flex-end'}} category="c1">
+          06/20/2021 9:00PM
+        </Text>
+      </View>
+      <Divider style={{marginVertical: 10}} />
       <Image
         style={styles.img}
         source={require('../../images/post-sample-img.png')}
