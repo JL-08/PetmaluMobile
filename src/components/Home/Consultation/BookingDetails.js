@@ -1,26 +1,54 @@
-import {Text, Button, Divider} from '@ui-kitten/components';
-import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import {Text, Button, Modal, Card} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-const BookingDetails = ({route, navigation: {goBack}}) => {
+import {createAppointment} from '../../../actions/appointmentActions';
+
+const BookingDetails = ({route, navigation}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRequestComplete, setIsRequestComplete] = useState(false);
+  const [serverMessage, setServerMessage] = useState();
+  const [hasRequestError, setHasRequestError] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleBookBtn = () => {
+    setIsLoading(true);
+    dispatch(
+      createAppointment(
+        route.params.appointment,
+        setServerMessage,
+        setIsRequestComplete,
+        setHasRequestError,
+        setIsLoading,
+      ),
+    );
+  };
+
+  const handleModalButton = () => {
+    setIsRequestComplete(false);
+
+    if (!hasRequestError) {
+      navigation.navigate({
+        name: 'Consultation',
+        params: {isBookingDone: true},
+        merge: true,
+      });
+    }
+  };
   return (
     <View style={styles.container}>
-      {/* <TouchableOpacity
-        style={{
-          marginVertical: 10,
-          display: 'flex',
-          flexDirection: 'row',
-        }}
-        onPress={() => goBack()}>
-        <Icon name="chevron-left" size={23} color="#999" />
-        <Text style={{marginLeft: 5, color: '#444'}}>Back</Text>
-      </TouchableOpacity> */}
+      {console.log(route.params)}
       <Text style={styles.title} category="h5">
-        BOOKING FEE
+        {route.params.appointment.type.toUpperCase()} CONSULTATION
       </Text>
-      <Text style={styles.topMargin}>{route.params.type} Consultation</Text>
-      <View style={styles.tableContainer}>
+      <View style={{...styles.tableContainer, ...styles.topMargin}}>
         <View style={styles.description}>
           <Text category="h6" style={styles.textPadding}>
             Consultation Fee
@@ -48,7 +76,29 @@ const BookingDetails = ({route, navigation: {goBack}}) => {
         NOTE: Booking fee will be completely refunded if the veterinarian
         cancels or does not accept your appointments after 24hours of booking.
       </Text>
-      <Button style={styles.topMargin}>BOOK APPOINTMENT</Button>
+      <Button style={styles.topMargin} onPress={handleBookBtn}>
+        BOOK APPOINTMENT
+      </Button>
+
+      <Modal visible={isRequestComplete}>
+        <Card disabled={true} style={styles.modal}>
+          <View style={styles.modalText}>
+            <Text>{serverMessage}</Text>
+          </View>
+          <Button
+            onPress={handleModalButton}
+            style={styles.modalBtn}
+            size="small">
+            OK
+          </Button>
+        </Card>
+      </Modal>
+
+      <Modal visible={isLoading}>
+        <Card disabled={true}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </Card>
+      </Modal>
     </View>
   );
 };
@@ -65,6 +115,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     flexDirection: 'row',
     padding: 15,
+    backgroundColor: 'white',
   },
   row: {
     flexDirection: 'row',
@@ -78,12 +129,23 @@ const styles = StyleSheet.create({
   textBorder: {
     borderTopWidth: 2,
     paddingVertical: 3,
+    color: 'green',
   },
   textPadding: {
     paddingVertical: 3,
   },
   topMargin: {
     marginTop: 10,
+  },
+  modal: {
+    minHeight: 200,
+    justifyContent: 'center',
+    alignContent: 'center',
+    borderWidth: 5,
+  },
+  modalText: {
+    height: 150,
+    justifyContent: 'center',
   },
 });
 

@@ -1,39 +1,43 @@
 import moment from 'moment';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, ImageBackground} from 'react-native';
 import {Text, Divider, List, ListItem} from '@ui-kitten/components';
 import CalendarPicker from 'react-native-calendar-picker';
 
-let customDatesStyles = [];
-customDatesStyles.push({
-  date: '2021-06-16',
-  style: {
-    backgroundColor: '#CEDDEC',
-  },
-  textStyle: {color: 'black'}, // sets the font color
-  containerStyle: [], // extra styling for day container
-});
-
-customDatesStyles.push({
-  date: '2021-06-28',
-  style: {
-    backgroundColor: '#CEDDEC',
-  },
-  textStyle: {color: 'black'}, // sets the font color
-  containerStyle: [], // extra styling for day container
-});
-
-const data = new Array(8).fill({
-  title: 'Item',
-  description: 'Description for Item',
-});
-
-const CalendarView = () => {
+const CalendarView = ({route}) => {
   const [date, setDate] = useState(Date.now());
+  const [selectedAppointmentList, setSelectedAppointmentList] = useState();
 
-  const renderItem = ({item, index}) => (
-    <ListItem title="01:00 PM" description="Appointment with Dr. Strange" />
+  const dateStyle = {
+    style: {
+      backgroundColor: '#CEDDEC',
+    },
+    textStyle: {color: 'black'}, // sets the font color
+    containerStyle: [],
+  };
+
+  const appointmentDates = route.params.appointmentList.map(appointment => ({
+    date: appointment.start_date,
+    vetName: appointment.vet_name,
+    ...dateStyle,
+  }));
+
+  const renderItem = ({item}) => (
+    <ListItem
+      title={moment(item.date).format('hh:mm A')}
+      description={`Appointment with Dr. ${item.vetName}`}
+    />
   );
+
+  useEffect(() => {
+    const filteredList = appointmentDates.filter(
+      appointment =>
+        moment(appointment.date).format('YYYY-MM-DD') ===
+        moment(date).format('YYYY-MM-DD'),
+    );
+
+    setSelectedAppointmentList(filteredList);
+  }, [date]);
 
   return (
     <ImageBackground
@@ -49,7 +53,7 @@ const CalendarView = () => {
           selectedStartDate={date}
           selectedDayColor="#7068DE"
           selectedDayTextColor="#fff"
-          customDatesStyles={customDatesStyles}
+          customDatesStyles={appointmentDates}
           onDateChange={selectedDate => setDate(selectedDate)}
         />
 
@@ -59,7 +63,7 @@ const CalendarView = () => {
           </View>
           <View style={styles.listContainer}>
             <List
-              data={data}
+              data={selectedAppointmentList}
               ItemSeparatorComponent={Divider}
               renderItem={renderItem}
             />

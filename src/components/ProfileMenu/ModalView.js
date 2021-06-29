@@ -3,7 +3,9 @@ import {StyleSheet, View, Image} from 'react-native';
 import {Button, Card, Modal, Text} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-const ModalView = ({styles, visible, setVisible}) => {
+import moment from 'moment';
+
+const ModalView = ({styles, visible, setVisible, appointment}) => {
   return (
     <>
       <Modal
@@ -19,25 +21,32 @@ const ModalView = ({styles, visible, setVisible}) => {
           <View>
             <View>
               <Text category="h6" style={styles.name}>
-                Dr. Shan Valdez
+                Dr. {appointment.vet_name}
               </Text>
               <Text category="c1">Doctor of Veterinary Medicine</Text>
             </View>
             <Text category="s1" style={{...modalStyles.bold, marginTop: 20}}>
-              Online Consultation
+              {appointment &&
+                appointment.type.charAt(0).toUpperCase() +
+                  appointment.type.slice(1)}{' '}
+              Consultation
             </Text>
             <View style={styles.row}>
               <Icon style={styles.icon} name="clock-o" color="#888" size={20} />
               <View style={{marginTop: 5}}>
-                <Text category="p1">June 11, 2021, Wednesday</Text>
-                <Text category="p1">01:00 PM - 05:00 PM</Text>
+                <Text category="p1">
+                  {moment(appointment.start_date).format('MMMM DD YYYY, dddd')}
+                </Text>
+                <Text category="p1">
+                  {moment(appointment.start_date).format('hh:mm A')}
+                </Text>
               </View>
             </View>
             <View style={modalStyles.topMargin}>
               <Text category="s1" style={modalStyles.bold}>
                 Chief of complain
               </Text>
-              <Text category="p1">Nagsusulat daw aso nya</Text>
+              <Text category="p1">{appointment.reason}</Text>
             </View>
             <View style={modalStyles.topMargin}>
               <Text category="s1" style={modalStyles.bold}>
@@ -49,8 +58,14 @@ const ModalView = ({styles, visible, setVisible}) => {
                   <Text category="p1">Appointment</Text>
                 </View>
                 <View>
-                  <Text category="p1">Pending</Text>
-                  <Text category="p1">Pending</Text>
+                  <Text category="p1">Completed</Text>
+                  <Text category="p1">
+                    {appointment.is_completed
+                      ? 'Completed'
+                      : appointment.is_approved
+                      ? 'Approved'
+                      : 'Pending'}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -66,8 +81,10 @@ const ModalView = ({styles, visible, setVisible}) => {
                   COPY
                 </Button>
               </View>
-              <Text category="p1" style={modalStyles.link}>
-                https://meet.google.com/qmu-bkxm-gga
+              <Text
+                category="p1"
+                style={appointment.meeting_link ? modalStyles.link : ''}>
+                {appointment.meeting_link || 'N/A'}
               </Text>
             </View>
             <Button
@@ -88,7 +105,7 @@ const modalStyles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modal: {
-    maxWidth: '95%',
+    maxWidth: '100%',
   },
   btn: {
     marginTop: 10,

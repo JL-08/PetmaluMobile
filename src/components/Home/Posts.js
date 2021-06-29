@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Image} from 'react-native';
-import {Card, List, Text} from '@ui-kitten/components';
+import {Card, List, Text, Divider} from '@ui-kitten/components';
 import ContentTitle from './ContentTitle';
 
 const data = new Array(8).fill({

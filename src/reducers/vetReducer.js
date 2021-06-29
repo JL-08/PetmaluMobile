@@ -1,6 +1,6 @@
 import {GET_ALL_VETS} from '../constants/actionTypes';
 
-const authReducer = (state = {authData: null}, action) => {
+const vetReducer = (state = {authData: null}, action) => {
   switch (action.type) {
     case GET_ALL_VETS:
       return {
@@ -13,4 +13,4 @@ const authReducer = (state = {authData: null}, action) => {
   }
 };
 
-export default authReducer;
+export default vetReducer;

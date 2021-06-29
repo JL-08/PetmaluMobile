@@ -1,6 +1,6 @@
 import {GET_ALL_USER_PETS} from '../constants/actionTypes';
 
-const authReducer = (state = {authData: null}, action) => {
+const petReducer = (state = {petData: null}, action) => {
   switch (action.type) {
     case GET_ALL_USER_PETS:
       return {
@@ -13,4 +13,4 @@ const authReducer = (state = {authData: null}, action) => {
   }
 };
 
-export default authReducer;
+export default petReducer;

@@ -22,10 +22,12 @@ import {getAllUserPets} from '../../../actions/petActons';
 
 const VetList = ({navigation, setIsLoading}) => {
   const [isInList, setIsInList] = useState(true);
+  //const [isBookingDone, setIsBookingDone] = useState(false);
   const [selectedVet, setSelectedVet] = useState({});
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
+  const [reason, setReason] = useState();
   const [isEditingTime, setIsEditingTime] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.authData);
@@ -60,11 +62,10 @@ const VetList = ({navigation, setIsLoading}) => {
           <View style={styles.margin}>
             <Text style={styles.name} category="h6">
               Dr. {info.item.name}
-              {console.log(info)}
             </Text>
             <Text category="s2">Doctor of Veterinary Medicine</Text>
           </View>
-          <View style={styles.margin}>
+          {/* <View style={styles.margin}>
             <View style={styles.row}>
               <FAIcon
                 style={styles.icon}
@@ -83,20 +84,28 @@ const VetList = ({navigation, setIsLoading}) => {
               />
               <Text category="p1">Online consultation</Text>
             </View>
-          </View>
+          </View> */}
           {/* <TouchableOpacity style={styles.margin}>
             <Text style={styles.clinicText}>See Clinic</Text>
           </TouchableOpacity> */}
-          <View style={{...styles.location, ...styles.margin}}>
+          <View
+            style={{
+              ...styles.textWidth,
+              ...styles.margin,
+              flexDirection: 'row',
+            }}>
+            <View style={{...styles.center, marginRight: 15}}>
+              <FAIcon name="map-marker" color="#888" size={28} />
+            </View>
             <Text>{info.item.location}</Text>
           </View>
           <View style={styles.row}>
             <View style={styles.center}>
               <FAIcon name="clock-o" color="#888" size={25} />
             </View>
-            <View>
-              <Text>Wed, Sat</Text>
-              <Text>01:00PM - 06:00PMt</Text>
+            <View style={styles.textWidth}>
+              <Text>{info.item.availability_day}</Text>
+              <Text>{info.item.availability_time}</Text>
             </View>
           </View>
           <Button
@@ -140,6 +149,7 @@ const VetList = ({navigation, setIsLoading}) => {
             date={date}
             onSelect={nextDate => setDate(nextDate)}
             accessoryRight={CalendarIcon}
+            min={new Date()}
           />
           <Text style={{...styles.labelColor, fontSize: 12}}>Time</Text>
           <TouchableOpacity
@@ -161,12 +171,25 @@ const VetList = ({navigation, setIsLoading}) => {
             multiline={true}
             textStyle={{minHeight: 64}}
             placeholder="Multiline"
+            value={reason}
+            onChangeText={e => setReason(e)}
           />
           <View style={styles.row}>
             <Button
               style={{flex: 1}}
               onPress={() =>
-                navigation.push('Booking Details', {type: 'Online'})
+                navigation.push('Booking Details', {
+                  appointment: {
+                    type: 'online',
+                    vet: selectedVet.id,
+                    user: user.user_id,
+                    date: `${moment(date).format('YYYY-MM-DD')} ${moment(
+                      time,
+                    ).format('kk:mm')}`,
+                    pet: petList[selectedIndex].id,
+                    reason,
+                  },
+                })
               }>
               CONTINUE
             </Button>
@@ -240,7 +263,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     borderRadius: 50,
   },
-  location: {
+  textWidth: {
     maxWidth: '80%',
   },
   timeTouch: {

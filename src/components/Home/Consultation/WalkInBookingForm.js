@@ -29,6 +29,7 @@ const WalkInBookingForm = ({
 }) => {
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
+  const [reason, setReason] = useState();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isEditingTime, setIsEditingTime] = useState(false);
   const dispatch = useDispatch();
@@ -88,12 +89,27 @@ const WalkInBookingForm = ({
         label="Reason of Consultation"
         multiline={true}
         textStyle={{minHeight: 64}}
-        placeholder="your message here..."
+        placeholder="Multiline"
+        value={reason}
+        onChangeText={e => setReason(e)}
       />
       <View style={styles.row}>
         <Button
           style={{flex: 1}}
-          onPress={() => navigation.push('Booking Details', {type: 'Walk-In'})}>
+          onPress={() =>
+            navigation.push('Booking Details', {
+              appointment: {
+                type: 'walk-in',
+                vet: vetData.id,
+                user: user.user_id,
+                date: `${moment(date).format('YYYY-MM-DD')} ${moment(
+                  time,
+                ).format('kk:mm')}`,
+                pet: pets[selectedIndex].id,
+                reason,
+              },
+            })
+          }>
           CONTINUE
         </Button>
         <Button

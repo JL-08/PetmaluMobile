@@ -13,10 +13,22 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import VetList from './Consultation/VetList';
 import Map from './Consultation/Map';
 
-const Consultation = ({navigation}) => {
+const Consultation = ({navigation, route}) => {
   const [isInOnline, setIsInOnline] = useState(false);
   const [isInWalkIn, setIsInWalkIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (route?.params?.isBookingDone) {
+      route.params.isBookingDone = false;
+      goToTypeSelection();
+    }
+  }, [route?.params?.isBookingDone]);
+
+  const goToTypeSelection = () => {
+    setIsInOnline(false);
+    setIsInWalkIn(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -28,10 +40,7 @@ const Consultation = ({navigation}) => {
             display: 'flex',
             flexDirection: 'row',
           }}
-          onPress={() => {
-            setIsInOnline(false);
-            setIsInWalkIn(false);
-          }}>
+          onPress={() => goToTypeSelection()}>
           <Icon name="chevron-left" size={23} color="#999" />
           <Text style={{marginLeft: 5, color: '#444'}}>Back to Selection</Text>
         </TouchableOpacity>

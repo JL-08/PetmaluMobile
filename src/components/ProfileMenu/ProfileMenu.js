@@ -11,11 +11,11 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Header from './Header';
 import Menu from './Menu';
 
-const ProfileMenu = ({navigation}) => {
+const ProfileMenu = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Header />
+        <Header userName={route.params.user.name} />
       </View>
       <View style={styles.listContainer}>
         <Menu navigation={navigation} />

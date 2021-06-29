@@ -1,15 +1,33 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, ImageBackground, Image} from 'react-native';
-import {Text, List, Button} from '@ui-kitten/components';
+import React, {useState, useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  View,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
+import {Text, List, Button, Modal, Card} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import ModalView from './ModalView';
 
-const data = new Array(8).fill({
-  title: 'Item',
-});
+import moment from 'moment';
+import {getAllUserAppointments} from '../../actions/appointmentActions';
 
 const Appointments = ({navigation}) => {
   const [visible, setVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.authData);
+  const appointmentList = useSelector(
+    state => state.appointment.appointmentData,
+  );
+
+  useEffect(() => {
+    setIsLoading(true);
+    dispatch(getAllUserAppointments(user.user_id, setIsLoading));
+  }, []);
 
   const renderItem = info => (
     <View style={{...styles.card, ...styles.row}}>
@@ -20,22 +38,32 @@ const Appointments = ({navigation}) => {
       <View>
         <View>
           <Text category="h6" style={styles.name}>
-            Dr. Shan Valdez
+            Dr. {info.item.vet_name}
           </Text>
           <Text category="c1">Doctor of Veterinary Medicine</Text>
         </View>
-        <Text style={{marginTop: 5}}>Online Consultation</Text>
+        <Text style={{marginTop: 5}}>
+          {info.item.type.charAt(0).toUpperCase() + info.item.type.slice(1)}{' '}
+          Consultation
+        </Text>
         <View style={{...styles.row}}>
           <Icon style={styles.icon} name="clock-o" color="#888" size={20} />
           <View style={{marginTop: 5}}>
-            <Text category="p2">June 11, 2021, Wednesday</Text>
-            <Text category="p2">01:00 PM - 05:00 PM</Text>
+            <Text category="p2">
+              {moment(info.item.start_date).format('MMMM DD YYYY, dddd')}
+            </Text>
+            <Text category="p2">
+              {moment(info.item.start_date).format('hh:mm A')}
+            </Text>
           </View>
         </View>
         <Button
           style={styles.btn}
           size="small"
-          onPress={() => setVisible(true)}>
+          onPress={() => {
+            setVisible(true);
+            setSelectedAppointment(info.item);
+          }}>
           DETAILS
         </Button>
       </View>
@@ -61,15 +89,31 @@ const Appointments = ({navigation}) => {
         accessoryLeft={props => (
           <Icon size={20} name="calendar" color="#7068DE" />
         )}
-        onPress={() => navigation.push('Calendar')}>
+        onPress={() =>
+          navigation.navigate('Calendar', {
+            appointmentList,
+          })
+        }>
         CHECK CALENDAR
       </Button>
       <List
         style={{backgroundColor: 'rgba(52, 52, 52, 0.0)'}}
-        data={data}
+        data={appointmentList}
         renderItem={renderItem}
       />
-      <ModalView styles={styles} visible={visible} setVisible={setVisible} />
+
+      <ModalView
+        styles={styles}
+        visible={visible}
+        setVisible={setVisible}
+        appointment={selectedAppointment}
+      />
+
+      <Modal visible={isLoading}>
+        <Card disabled={true}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </Card>
+      </Modal>
     </ImageBackground>
   );
 };
