@@ -1,4 +1,4 @@
-import {AUTH, LOGOUT, VERIFY} from '../constants/actionTypes';
+import {AUTH, VET_AUTH, LOGOUT, VERIFY} from '../constants/actionTypes';
 
 let data;
 
@@ -10,6 +10,14 @@ const authReducer = (state = {authData: null}, action) => {
       return {
         ...state,
         authData: {...action.data[0], role: 'user'},
+      };
+
+    case VET_AUTH:
+      console.log(action.data[0]);
+
+      return {
+        ...state,
+        authVetData: {...action.data[0], role: 'vet'},
       };
 
     case LOGOUT:
