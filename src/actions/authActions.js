@@ -1,4 +1,4 @@
-import {AUTH} from '../constants/actionTypes';
+import {AUTH, VET_AUTH} from '../constants/actionTypes';
 import * as api from '../api/index';
 
 export const register =
@@ -55,6 +55,37 @@ export const login =
       } else {
         dispatch({type: AUTH, data});
         navigation.reset({index: 0, routes: [{name: 'Home'}]});
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+export const vetLogin =
+  (
+    formData,
+    setServerMessage,
+    setIsRequestComplete,
+    setHasRequestError,
+    setIsLoading,
+    navigation,
+  ) =>
+  async dispatch => {
+    try {
+      const {data} = await api.vetLogin(formData);
+      setIsLoading(false);
+
+      if (
+        data.includes(
+          'Incorrect email or password' || data.includes('Connection Failed'),
+        )
+      ) {
+        setServerMessage(data);
+        setIsRequestComplete(true);
+        setHasRequestError(true);
+      } else {
+        dispatch({type: VET_AUTH, data});
+        navigation.reset({index: 0, routes: [{name: 'Vet Home'}]});
       }
     } catch (err) {
       console.log(err);

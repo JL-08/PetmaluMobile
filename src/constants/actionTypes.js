@@ -1,4 +1,5 @@
 export const AUTH = 'AUTH';
+export const VET_AUTH = 'VET_AUTH';
 export const LOGOUT = 'LOGOUT';
 export const VERIFY = 'VERIFY';
 

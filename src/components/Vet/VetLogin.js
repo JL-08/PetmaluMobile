@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   Text,
   View,
@@ -9,18 +10,45 @@ import {
   ImageBackground,
   ActivityIndicator,
 } from 'react-native';
+import {Modal, Card, Button} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
+import {vetLogin} from '../../actions/authActions';
+
 const initialLoginData = {
-  name: '',
+  email: '',
   password: '',
 };
 
 const VetLogin = ({navigation}) => {
   const [vetFormData, setVetFormData] = useState(initialLoginData);
+  const [isLoading, setIsLoading] = useState(false);
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+  const [isRequestComplete, setIsRequestComplete] = useState(false);
+  const [serverMessage, setServerMessage] = useState();
+  const [hasRequestError, setHasRequestError] = useState(false);
+  const [hasFormError, setHasFormError] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleSubmit = () => {
+    dispatch(
+      vetLogin(
+        vetFormData,
+        setServerMessage,
+        setIsRequestComplete,
+        setHasRequestError,
+        setIsLoading,
+        navigation,
+      ),
+    );
+  };
+
   const handleChange = (e, name) => {
     setVetFormData({...vetFormData, [name]: e});
+  };
+
+  const handleModalButton = () => {
+    setIsRequestComplete(false);
   };
 
   return (
@@ -44,11 +72,11 @@ const VetLogin = ({navigation}) => {
             Vet Login
           </Text>
           <TextInput
-            value={vetFormData['name']}
+            value={vetFormData['email']}
             style={styles.input}
-            textContentType="name"
-            placeholder="Full Name"
-            onChangeText={e => handleChange(e, 'name')}
+            textContentType="emailAddress"
+            placeholder="Email"
+            onChangeText={e => handleChange(e, 'email')}
           />
           <View style={styles.passwordContainer}>
             <TextInput
@@ -70,15 +98,31 @@ const VetLogin = ({navigation}) => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() =>
-              navigation.reset({index: 0, routes: [{name: 'Vet Home'}]})
-            }>
+          <TouchableOpacity style={styles.btn} onPress={handleSubmit}>
             <Text style={styles.btnText}>LOGIN</Text>
           </TouchableOpacity>
         </View>
       </View>
+
+      <Modal visible={isRequestComplete}>
+        <Card disabled={true} style={styles.modal}>
+          <View style={styles.modalText}>
+            <Text>{serverMessage}</Text>
+          </View>
+          <Button
+            onPress={handleModalButton}
+            style={styles.modalBtn}
+            size="small">
+            OK
+          </Button>
+        </Card>
+      </Modal>
+
+      <Modal visible={isLoading}>
+        <Card disabled={true}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </Card>
+      </Modal>
     </ImageBackground>
   );
 };
