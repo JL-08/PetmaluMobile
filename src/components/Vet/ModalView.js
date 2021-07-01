@@ -3,7 +3,9 @@ import {StyleSheet, View, Image} from 'react-native';
 import {Button, Card, Modal, Text} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-const ModalView = ({styles, visible, setVisible}) => {
+import moment from 'moment';
+
+const ModalView = ({styles, visible, setVisible, appointment}) => {
   return (
     <>
       <Modal
@@ -19,56 +21,57 @@ const ModalView = ({styles, visible, setVisible}) => {
           <View>
             <View>
               <Text category="h6" style={styles.name}>
-                Dr. Shan Valdez
+                {appointment?.user_name}
               </Text>
-              <Text category="c1">Doctor of Veterinary Medicine</Text>
+              <Text category="c1">Pet Owner</Text>
             </View>
             <Text category="s1" style={{...modalStyles.bold, marginTop: 20}}>
-              Online Consultation
+              {appointment?.type.charAt(0).toUpperCase() +
+                appointment?.type.slice(1)}{' '}
+              Consultation
             </Text>
             <View style={styles.row}>
               <Icon style={styles.icon} name="clock-o" color="#888" size={20} />
               <View style={{marginTop: 5}}>
-                <Text category="p1">June 11, 2021, Wednesday</Text>
-                <Text category="p1">01:00 PM - 05:00 PM</Text>
+                <Text category="p1">
+                  {moment(appointment?.start_date).format('MMMM DD YYYY, dddd')}
+                </Text>
+                <Text category="p1">
+                  {moment(appointment?.start_date).format('hh:mm A')}
+                </Text>
               </View>
             </View>
             <View style={modalStyles.topMargin}>
               <Text category="s1" style={modalStyles.bold}>
                 Chief of complain
               </Text>
-              <Text category="p1">Nagsusulat daw aso nya</Text>
+              <Text category="p1">{appointment?.reason}</Text>
             </View>
             <View style={modalStyles.topMargin}>
-              <Text category="s1" style={modalStyles.bold}>
-                Status
+              <Text category="h6" style={modalStyles.bold}>
+                Pet Details
               </Text>
               <View style={modalStyles.row}>
                 <View style={modalStyles.rightMargin}>
-                  <Text category="p1">Payment</Text>
-                  <Text category="p1">Appointment</Text>
+                  <Text category="p1">Name:</Text>
+                  <Text category="p1">Age:</Text>
+                  <Text category="p1">Type:</Text>
+                  <Text category="p1">Breed:</Text>
+                  <Text category="p1">Height:</Text>
+                  <Text category="p1">Weight:</Text>
                 </View>
                 <View>
-                  <Text category="p1">Pending</Text>
-                  <Text category="p1">Pending</Text>
+                  <Text category="p1">{appointment?.pet_name}</Text>
+                  <Text category="p1">{appointment?.pet_age}</Text>
+                  <Text category="p1">
+                    {appointment?.pet_type.charAt(0).toUpperCase() +
+                      appointment?.pet_type.slice(1)}
+                  </Text>
+                  <Text category="p1">{appointment?.pet_breed}</Text>
+                  <Text category="p1">{appointment?.pet_height} inches</Text>
+                  <Text category="p1">{appointment?.pet_weight} kg</Text>
                 </View>
               </View>
-            </View>
-            <View style={modalStyles.topMargin}>
-              <View style={{...modalStyles.row, alignItems: 'center'}}>
-                <Text category="s1" style={modalStyles.bold}>
-                  Consultation Link
-                </Text>
-                <Button
-                  appearance="ghost"
-                  size="tiny"
-                  style={modalStyles.copyBtn}>
-                  COPY
-                </Button>
-              </View>
-              <Text category="p1" style={modalStyles.link}>
-                https://meet.google.com/qmu-bkxm-gga
-              </Text>
             </View>
             <Button
               style={modalStyles.btn}
@@ -88,7 +91,7 @@ const modalStyles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modal: {
-    maxWidth: '95%',
+    minWidth: '80%',
   },
   btn: {
     marginTop: 10,

@@ -1,4 +1,7 @@
-import {GET_ALL_USER_APPOINTMENTS} from '../constants/actionTypes';
+import {
+  GET_ALL_USER_APPOINTMENTS,
+  GET_APPOINTMENTS_FOR_APPROVAL,
+} from '../constants/actionTypes';
 import * as api from '../api/index';
 
 export const getAllUserAppointments =
@@ -35,6 +38,36 @@ export const createAppointment =
         setServerMessage(data);
         setIsRequestComplete(true);
         setHasRequestError(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+export const getApprovalAppointments =
+  (vet_id, setIsLoading) => async dispatch => {
+    try {
+      const {data} = await api.getApprovalAppointments(vet_id);
+      setIsLoading(false);
+
+      dispatch({type: GET_APPOINTMENTS_FOR_APPROVAL, data});
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+export const updateAppointmentStatus =
+  (appointmentData, setServerMessage, setIsRequestComplete, setIsLoading) =>
+  async dispatch => {
+    try {
+      console.log(appointmentData);
+      const {data} = await api.updateAppointmentStatus(appointmentData);
+      console.log(data);
+
+      setIsLoading(false);
+      if (data.includes('Appointment')) {
+        setServerMessage(data);
+        setIsRequestComplete(true);
       }
     } catch (err) {
       console.log(err);

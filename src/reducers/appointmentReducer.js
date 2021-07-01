@@ -1,4 +1,7 @@
-import {GET_ALL_USER_APPOINTMENTS} from '../constants/actionTypes';
+import {
+  GET_ALL_USER_APPOINTMENTS,
+  GET_APPOINTMENTS_FOR_APPROVAL,
+} from '../constants/actionTypes';
 
 const appointmentReducer = (state = {appointmentData: null}, action) => {
   switch (action.type) {
@@ -6,6 +9,12 @@ const appointmentReducer = (state = {appointmentData: null}, action) => {
       return {
         ...state,
         appointmentData: action.data,
+      };
+
+    case GET_APPOINTMENTS_FOR_APPROVAL:
+      return {
+        ...state,
+        appointmentsForApprovalData: action.data,
       };
 
     default:
