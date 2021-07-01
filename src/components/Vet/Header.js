@@ -1,12 +1,15 @@
 import React from 'react';
+import {useSelector} from 'react-redux';
 import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 
 const Header = ({navigation}) => {
+  const vet = useSelector(state => state.auth.authVetData);
+
   return (
     <View style={style.container}>
       <TouchableOpacity
         style={style.avatarContainer}
-        onPress={() => navigation.push('Vet Profile Menu')}>
+        onPress={() => navigation.push('Vet Profile Menu', {vet})}>
         <Image
           style={style.avatar}
           source={require('../../images/avatar.gif')}

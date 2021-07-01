@@ -4,11 +4,11 @@ import {StyleSheet, View} from 'react-native';
 import Header from './Header';
 import Menu from './Menu';
 
-const ProfileMenu = ({navigation}) => {
+const ProfileMenu = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Header />
+        <Header vetName={route.params.vet.name} />
       </View>
       <View style={styles.listContainer}>
         <Menu navigation={navigation} />

@@ -93,6 +93,7 @@ const App = () => {
                   component={VetProfileMenu}
                   options={{
                     headerShown: true,
+                    headerTitle: 'Profile Menu',
                   }}
                 />
                 <Stack.Screen

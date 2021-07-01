@@ -2,7 +2,7 @@ import {Avatar, Text} from '@ui-kitten/components';
 import React from 'react';
 import {StyleSheet, View, ImageBackground, Image} from 'react-native';
 
-const Header = () => {
+const Header = ({vetName}) => {
   return (
     <View style={styles.container}>
       <Image
@@ -10,7 +10,7 @@ const Header = () => {
         source={require('../../../images/avatar.gif')}
       />
       <Text style={styles.name} category="h3">
-        IAN BENEDICT PACELO
+        {vetName.toUpperCase()}
       </Text>
     </View>
   );
