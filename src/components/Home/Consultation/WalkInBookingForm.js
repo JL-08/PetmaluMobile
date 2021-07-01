@@ -57,26 +57,30 @@ const WalkInBookingForm = ({
           <Text category="s2">Doctor of Veterinary Medicine</Text>
         </View>
       </View>
-      <Datepicker
+      <View style={styles.row}>
+        <Datepicker
+          style={{...styles.margin, flex: 1, marginRight: 5}}
+          label="Date"
+          placeholder="Pick Date"
+          date={date}
+          onSelect={nextDate => setDate(nextDate)}
+          accessoryRight={CalendarIcon}
+        />
+        <View style={{flex: 1}}>
+          <Text style={{...styles.labelColor, fontSize: 12}}>Time</Text>
+          <TouchableOpacity
+            style={styles.timeTouch}
+            onPress={() => setIsEditingTime(true)}>
+            <Text style={styles.labelColor}>{moment(time).format('LT')}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <Input
         style={styles.margin}
-        label="Date"
-        placeholder="Pick Date"
-        date={date}
-        onSelect={nextDate => setDate(nextDate)}
-        accessoryRight={CalendarIcon}
+        label="Duration"
+        keyboardType="number-pad"
+        placeholder="mins"
       />
-      <Text style={{...styles.labelColor, fontSize: 12}}>Time</Text>
-      <TouchableOpacity
-        style={styles.timeTouch}
-        onPress={() => setIsEditingTime(true)}>
-        {/* <Input
-          style={styles.margin}
-          label="Time"
-          placeholder="00:00"
-          //</View>onFocus={() => setIsEditingTime(true)}
-        /> */}
-        <Text style={styles.labelColor}>{moment(time).format('LT')}</Text>
-      </TouchableOpacity>
       <Select
         style={styles.margin}
         label="Select Pet"
