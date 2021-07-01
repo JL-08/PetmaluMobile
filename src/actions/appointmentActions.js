@@ -1,6 +1,6 @@
 import {
   GET_ALL_USER_APPOINTMENTS,
-  GET_APPOINTMENTS_FOR_APPROVAL,
+  GET_APPOINTMENTS_BY_STATUS,
 } from '../constants/actionTypes';
 import * as api from '../api/index';
 
@@ -44,13 +44,13 @@ export const createAppointment =
     }
   };
 
-export const getApprovalAppointments =
-  (vet_id, setIsLoading) => async dispatch => {
+export const getAppointmentsByStatus =
+  (appointmentData, setIsLoading) => async dispatch => {
     try {
-      const {data} = await api.getApprovalAppointments(vet_id);
+      const {data} = await api.getAppointmentsByStatus(appointmentData);
       setIsLoading(false);
 
-      dispatch({type: GET_APPOINTMENTS_FOR_APPROVAL, data});
+      dispatch({type: GET_APPOINTMENTS_BY_STATUS, data});
     } catch (err) {
       console.log(err);
     }

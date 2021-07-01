@@ -16,7 +16,7 @@ import ContentTitle from './ContentTitle';
 import moment from 'moment';
 
 import {
-  getApprovalAppointments,
+  getAppointmentsByStatus,
   updateAppointmentStatus,
 } from '../../actions/appointmentActions';
 
@@ -28,15 +28,19 @@ const Consultation = ({navigation}) => {
   const [serverMessage, setServerMessage] = useState();
   const [showPrompt, setShowPrompt] = useState(false);
   const vet = useSelector(state => state.auth.authVetData);
-  const appointments = useSelector(
-    state => state.appointment.appointmentsForApprovalData,
-  );
+  const appointments = useSelector(state => state.appointment.appointmentsData);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (vet) {
       setIsLoading(true);
-      dispatch(getApprovalAppointments(vet.id, setIsLoading));
+
+      dispatch(
+        getAppointmentsByStatus(
+          {vet_id: vet.id, status: 'pending'},
+          setIsLoading,
+        ),
+      );
     }
   }, []);
 
@@ -62,7 +66,12 @@ const Consultation = ({navigation}) => {
     setIsRequestComplete(false);
 
     setIsLoading(true);
-    dispatch(getApprovalAppointments(vet.id, setIsLoading));
+    dispatch(
+      getAppointmentsByStatus(
+        {vet_id: vet.id, status: 'pending'},
+        setIsLoading,
+      ),
+    );
   };
 
   const handlePrompt = (appointment_id, status) => {

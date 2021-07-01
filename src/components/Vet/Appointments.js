@@ -67,7 +67,7 @@ const Appointments = ({navigation}) => {
         padding: 10,
       }}>
       <ContentTitle title="Appointment List" />
-      <Button
+      {/* <Button
         style={styles.calendarBtn}
         appearance="outline"
         size="small"
@@ -76,7 +76,7 @@ const Appointments = ({navigation}) => {
         )}
         onPress={() => navigation.push('Calendar')}>
         CHECK CALENDAR
-      </Button>
+      </Button> */}
       <List
         style={{backgroundColor: 'rgba(52, 52, 52, 0.0)'}}
         data={data}

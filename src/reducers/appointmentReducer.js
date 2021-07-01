@@ -1,6 +1,6 @@
 import {
   GET_ALL_USER_APPOINTMENTS,
-  GET_APPOINTMENTS_FOR_APPROVAL,
+  GET_APPOINTMENTS_BY_STATUS,
 } from '../constants/actionTypes';
 
 const appointmentReducer = (state = {appointmentData: null}, action) => {
@@ -11,10 +11,10 @@ const appointmentReducer = (state = {appointmentData: null}, action) => {
         appointmentData: action.data,
       };
 
-    case GET_APPOINTMENTS_FOR_APPROVAL:
+    case GET_APPOINTMENTS_BY_STATUS:
       return {
         ...state,
-        appointmentsForApprovalData: action.data,
+        appointmentsData: action.data,
       };
 
     default:
