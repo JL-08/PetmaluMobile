@@ -3,6 +3,7 @@ import Posts from './Posts';
 import Consultation from './Consultation';
 import Header from './Header';
 import Appointments from './Appointments';
+import CalendarView from './CalendarView';
 
 import {StyleSheet, View, ImageBackground} from 'react-native';
 
@@ -39,6 +40,16 @@ const VetHome = ({navigation}) => {
               }}
             />
             <Tab.Screen
+              name="Calendar"
+              component={CalendarView}
+              options={{
+                tabBarLabel: 'Calendar',
+                tabBarIcon: () => (
+                  <Icon name="calendar" color="#555" size={25} />
+                ),
+              }}
+            />
+            {/* <Tab.Screen
               name="Consultation"
               component={Consultation}
               options={{
@@ -51,14 +62,14 @@ const VetHome = ({navigation}) => {
                   />
                 ),
               }}
-            />
+            /> */}
             <Tab.Screen
               name="Appointments"
               component={Appointments}
               options={{
                 tabBarLabel: 'Appointments',
                 tabBarIcon: () => (
-                  <IoniconsIcon name="time" color="#555" size={25} />
+                  <Icon name="list-ul" color="#555" size={25} />
                 ),
               }}
             />

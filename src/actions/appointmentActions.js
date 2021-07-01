@@ -1,5 +1,6 @@
 import {
   GET_ALL_USER_APPOINTMENTS,
+  GET_ALL_VET_APPOINTMENTS,
   GET_APPOINTMENTS_BY_STATUS,
 } from '../constants/actionTypes';
 import * as api from '../api/index';
@@ -11,6 +12,18 @@ export const getAllUserAppointments =
       setIsLoading(false);
 
       dispatch({type: GET_ALL_USER_APPOINTMENTS, data});
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+export const getAllVetAppointments =
+  (vet_id, setIsLoading) => async dispatch => {
+    try {
+      const {data} = await api.getAllVetAppointments(vet_id);
+      setIsLoading(false);
+
+      dispatch({type: GET_ALL_VET_APPOINTMENTS, data});
     } catch (err) {
       console.log(err);
     }

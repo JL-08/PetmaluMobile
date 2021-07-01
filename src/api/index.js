@@ -22,6 +22,9 @@ export const createAppointment = formData =>
 export const getAllUserAppointments = user_id =>
   API.post('/getAllUserAppointments.php', {user_id});
 
+export const getAllVetAppointments = vet_id =>
+  API.post('/getAllVetAppointments.php', {vet_id});
+
 export const getAppointmentsByStatus = data =>
   API.post('/getAppointmentsByStatus.php', data);
 

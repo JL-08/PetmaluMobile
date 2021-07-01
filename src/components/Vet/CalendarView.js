@@ -1,12 +1,33 @@
-import moment from 'moment';
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, ImageBackground} from 'react-native';
-import {Text, Divider, List, ListItem} from '@ui-kitten/components';
+import {useDispatch, useSelector} from 'react-redux';
+import moment from 'moment';
+import {
+  View,
+  StyleSheet,
+  ImageBackground,
+  ActivityIndicator,
+} from 'react-native';
+import {
+  Text,
+  Divider,
+  List,
+  ListItem,
+  Modal,
+  Card,
+} from '@ui-kitten/components';
 import CalendarPicker from 'react-native-calendar-picker';
+import {getAllVetAppointments} from '../../actions/appointmentActions';
 
 const CalendarView = () => {
   const [date, setDate] = useState(Date.now());
   const [selectedAppointmentList, setSelectedAppointmentList] = useState();
+  const [appointmentDates, setAppointmentDates] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const vet = useSelector(state => state.auth.authVetData);
+  const appointments = useSelector(
+    state => state.appointment.vetAppointmentsData,
+  );
+  const dispatch = useDispatch();
 
   const dateStyle = {
     style: {
@@ -16,28 +37,62 @@ const CalendarView = () => {
     containerStyle: [],
   };
 
-  const appointmentDates = route.params.appointmentList.map(appointment => ({
-    date: appointment.start_date,
-    vetName: appointment.vet_name,
-    ...dateStyle,
-  }));
-
-  const renderItem = ({item}) => (
-    <ListItem
-      title={moment(item.date).format('hh:mm A')}
-      description={`Appointment with Dr. ${item.vetName}`}
-    />
-  );
+  useEffect(() => {
+    if (vet) {
+      setIsLoading(true);
+      dispatch(getAllVetAppointments(vet.id, setIsLoading));
+    }
+  }, []);
 
   useEffect(() => {
-    const filteredList = appointmentDates.filter(
-      appointment =>
-        moment(appointment.date).format('YYYY-MM-DD') ===
-        moment(date).format('YYYY-MM-DD'),
-    );
+    if (appointments) {
+      const styledDates = appointments.map(appointment => ({
+        date: appointment.start_date,
+        userName: appointment.user_name,
+        status: appointment.status,
+        ...dateStyle,
+      }));
 
-    setSelectedAppointmentList(filteredList);
+      setAppointmentDates(styledDates);
+    }
+  }, [vet]);
+
+  useEffect(() => {
+    if (appointmentDates) {
+      const filteredList = appointmentDates.filter(
+        appointment =>
+          moment(appointment.date).format('YYYY-MM-DD') ===
+          moment(date).format('YYYY-MM-DD'),
+      );
+
+      setSelectedAppointmentList(filteredList);
+    }
   }, [date]);
+
+  const renderItem = ({item}) => (
+    <ListItem>
+      <View style={styles.itemContainer}>
+        <View style={styles.itemDetails}>
+          <Text style={styles.bold}>{moment(item.date).format('hh:mm A')}</Text>
+          <Text>{`Appointment with ${item.userName}`}</Text>
+        </View>
+        {console.log('item', item)}
+        <View style={styles.statusContainer}>
+          <Text
+            category="c1"
+            style={
+              item.status === 'approved'
+                ? {color: 'green'}
+                : item.status === 'rejected' || item.status === 'cancelled'
+                ? {color: 'red'}
+                : {}
+            }>
+            {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+          </Text>
+        </View>
+      </View>
+    </ListItem>
+  );
 
   return (
     <ImageBackground
@@ -70,6 +125,11 @@ const CalendarView = () => {
           </View>
         </View>
       </View>
+      <Modal visible={isLoading}>
+        <Card disabled={true}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </Card>
+      </Modal>
     </ImageBackground>
   );
 };
@@ -88,6 +148,18 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     maxHeight: 170,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+  },
+  itemDetails: {
+    flex: 1,
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  statusContainer: {
+    alignContent: 'center',
   },
 });
 
