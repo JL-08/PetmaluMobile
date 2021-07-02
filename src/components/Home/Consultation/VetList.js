@@ -12,7 +12,13 @@ import {
 } from '@ui-kitten/components';
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import FAIcon from 'react-native-vector-icons/dist/FontAwesome';
 import {default as TimePicker} from 'react-native-date-picker';
 import moment from 'moment';
@@ -20,15 +26,17 @@ import moment from 'moment';
 import {getAllVets} from '../../../actions/vetActions';
 import {getAllUserPets} from '../../../actions/petActons';
 
-const VetList = ({navigation, setIsLoading}) => {
-  const [isInList, setIsInList] = useState(true);
+const VetList = ({navigation, setIsLoading, isInList, setIsInList}) => {
   //const [isBookingDone, setIsBookingDone] = useState(false);
   const [selectedVet, setSelectedVet] = useState({});
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
+  const [duration, setDuration] = useState();
+  const [selectedDurationUnit, setSelectedDurationUnit] = useState(0);
   const [reason, setReason] = useState();
   const [isEditingTime, setIsEditingTime] = useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.authData);
   const vetList = useSelector(state => state.vet.authData);
@@ -36,9 +44,26 @@ const VetList = ({navigation, setIsLoading}) => {
 
   const CalendarIcon = props => <Icon {...props} name="calendar" />;
 
+  const ClockIcon = props => <Icon {...props} name="clock-outline" />;
+
+  const DurationUnit = () => (
+    <Select
+      style={{width: '31%'}}
+      onSelect={index => setSelectedDurationUnit(index.row)}
+      value={selectedDurationUnit === 0 ? 'mins' : 'hrs'}>
+      <SelectItem title="mins" />
+      <SelectItem title="hrs" />
+    </Select>
+  );
+
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(getAllVets(setIsLoading));
+    setRefreshing(true);
+    dispatch(getAllVets(setRefreshing));
+  }, []);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    dispatch(getAllVets(setRefreshing));
   }, []);
 
   const handleBookBtn = info => {
@@ -46,6 +71,22 @@ const VetList = ({navigation, setIsLoading}) => {
     setIsInList(false);
     setSelectedVet(info);
     dispatch(getAllUserPets(user.user_id, setIsLoading));
+  };
+
+  const calculateEndDate = () => {
+    const selectedDate = `${moment(date).format('YYYY-MM-DD')} ${moment(
+      time,
+    ).format('kk:mm')}`;
+
+    if (selectedDurationUnit === 0) {
+      return moment(selectedDate, 'YYYY-MM-DD kk:mm')
+        .add(duration, 'minutes')
+        .format('YYYY-MM-DD kk:mm');
+    } else {
+      return moment(selectedDate, 'YYYY-MM-DD kk:mm')
+        .add(duration, 'hours')
+        .format('YYYY-MM-DD kk:mm');
+    }
   };
 
   const renderItem = info => (
@@ -126,6 +167,9 @@ const VetList = ({navigation, setIsLoading}) => {
           contentContainerStyle={styles.contentContainer}
           data={vetList}
           renderItem={renderItem}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       ) : (
         <View>
@@ -149,9 +193,10 @@ const VetList = ({navigation, setIsLoading}) => {
               placeholder="Pick Date"
               date={date}
               onSelect={nextDate => setDate(nextDate)}
-              accessoryRight={CalendarIcon}
+              min={new Date()}
+              // accessoryRight={CalendarIcon}
             />
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, marginTop: 4}}>
               <Text style={{...styles.labelColor, fontSize: 12}}>Time</Text>
               <TouchableOpacity
                 style={styles.timeTouch}
@@ -164,9 +209,11 @@ const VetList = ({navigation, setIsLoading}) => {
           </View>
           <Input
             style={styles.margin}
+            value={duration}
             label="Duration"
             keyboardType="number-pad"
-            placeholder="mins"
+            accessoryRight={DurationUnit}
+            onChangeText={e => setDuration(e)}
           />
           <Select
             style={styles.margin}
@@ -181,7 +228,6 @@ const VetList = ({navigation, setIsLoading}) => {
             label="Reason of Consultation"
             multiline={true}
             textStyle={{minHeight: 64}}
-            placeholder="Multiline"
             value={reason}
             onChangeText={e => setReason(e)}
           />
@@ -197,6 +243,7 @@ const VetList = ({navigation, setIsLoading}) => {
                     date: `${moment(date).format('YYYY-MM-DD')} ${moment(
                       time,
                     ).format('kk:mm')}`,
+                    end_date: calculateEndDate(),
                     pet: petList[selectedIndex].id,
                     reason,
                   },
@@ -217,6 +264,7 @@ const VetList = ({navigation, setIsLoading}) => {
               date={time}
               mode="time"
               onDateChange={e => setTime(e)}
+              minuteInterval={5}
             />
           </View>
           <Button onPress={() => setIsEditingTime(false)} size="small">
@@ -280,10 +328,9 @@ const styles = StyleSheet.create({
   timeTouch: {
     backgroundColor: '#F7F9FC',
     padding: 10,
-    marginBottom: 10,
   },
   labelColor: {
-    color: '#777',
+    color: '#A3ADC1',
   },
 });
 

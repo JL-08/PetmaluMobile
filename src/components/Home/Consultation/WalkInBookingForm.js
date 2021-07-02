@@ -30,18 +30,46 @@ const WalkInBookingForm = ({
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [reason, setReason] = useState();
+  const [duration, setDuration] = useState();
+  const [selectedDurationUnit, setSelectedDurationUnit] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isEditingTime, setIsEditingTime] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.authData);
   const pets = useSelector(state => state.pet.petData);
 
-  const CalendarIcon = props => <Icon {...props} name="calendar" />;
-
   useEffect(() => {
     setIsLoading(true);
     dispatch(getAllUserPets(user.user_id, setIsLoading));
   }, []);
+
+  const CalendarIcon = props => <Icon {...props} name="calendar" />;
+
+  const DurationUnit = () => (
+    <Select
+      style={{width: '31%'}}
+      onSelect={index => setSelectedDurationUnit(index.row)}
+      value={selectedDurationUnit === 0 ? 'mins' : 'hrs'}>
+      <SelectItem title="mins" />
+      <SelectItem title="hrs" />
+    </Select>
+  );
+
+  const calculateEndDate = () => {
+    const selectedDate = `${moment(date).format('YYYY-MM-DD')} ${moment(
+      time,
+    ).format('kk:mm')}`;
+
+    if (selectedDurationUnit === 0) {
+      return moment(selectedDate, 'YYYY-MM-DD kk:mm')
+        .add(duration, 'minutes')
+        .format('YYYY-MM-DD kk:mm');
+    } else {
+      return moment(selectedDate, 'YYYY-MM-DD kk:mm')
+        .add(duration, 'hours')
+        .format('YYYY-MM-DD kk:mm');
+    }
+  };
 
   return (
     <View>
@@ -64,9 +92,10 @@ const WalkInBookingForm = ({
           placeholder="Pick Date"
           date={date}
           onSelect={nextDate => setDate(nextDate)}
-          accessoryRight={CalendarIcon}
+          min={new Date()}
+          // accessoryRight={CalendarIcon}
         />
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, marginTop: 4}}>
           <Text style={{...styles.labelColor, fontSize: 12}}>Time</Text>
           <TouchableOpacity
             style={styles.timeTouch}
@@ -77,9 +106,11 @@ const WalkInBookingForm = ({
       </View>
       <Input
         style={styles.margin}
+        value={duration}
         label="Duration"
         keyboardType="number-pad"
-        placeholder="mins"
+        accessoryRight={DurationUnit}
+        onChangeText={e => setDuration(e)}
       />
       <Select
         style={styles.margin}
@@ -93,7 +124,6 @@ const WalkInBookingForm = ({
         label="Reason of Consultation"
         multiline={true}
         textStyle={{minHeight: 64}}
-        placeholder="Multiline"
         value={reason}
         onChangeText={e => setReason(e)}
       />
@@ -109,6 +139,7 @@ const WalkInBookingForm = ({
                 date: `${moment(date).format('YYYY-MM-DD')} ${moment(
                   time,
                 ).format('kk:mm')}`,
+                end_date: calculateEndDate(),
                 pet: pets[selectedIndex].id,
                 reason,
               },
@@ -133,6 +164,7 @@ const WalkInBookingForm = ({
               date={time}
               mode="time"
               onDateChange={e => setTime(e)}
+              minuteInterval={5}
             />
           </View>
           <Button onPress={() => setIsEditingTime(false)} appearance="ghost">
@@ -163,10 +195,9 @@ const styles = StyleSheet.create({
   timeTouch: {
     backgroundColor: '#F7F9FC',
     padding: 10,
-    marginBottom: 10,
   },
   labelColor: {
-    color: '#777',
+    color: '#A3ADC1',
   },
 });
 

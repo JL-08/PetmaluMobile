@@ -6,6 +6,7 @@ import {
   Text,
   ActivityIndicator,
 } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
 import {Button, Card, Modal} from '@ui-kitten/components';
 
 import ContentTitle from './ContentTitle';
@@ -17,6 +18,8 @@ const Consultation = ({navigation, route}) => {
   const [isInOnline, setIsInOnline] = useState(false);
   const [isInWalkIn, setIsInWalkIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInMap, setIsInMap] = useState(false);
+  const [isInVetList, setIsInVetList] = useState(false);
 
   useEffect(() => {
     if (route?.params?.isBookingDone) {
@@ -32,7 +35,7 @@ const Consultation = ({navigation, route}) => {
 
   return (
     <View style={styles.container}>
-      {(isInOnline || isInWalkIn) && (
+      {(isInOnline || isInWalkIn) && isInVetList && isInMap && (
         <TouchableOpacity
           style={{
             marginVertical: 10,
@@ -50,10 +53,20 @@ const Consultation = ({navigation, route}) => {
         <View style={styles.center}>
           <ContentTitle title="Book an Appointment" />
           <View style={styles.btnContainer}>
-            <Button style={styles.btn} onPress={() => setIsInOnline(true)}>
+            <Button
+              style={styles.btn}
+              onPress={() => {
+                setIsInOnline(true);
+                setIsInVetList(true);
+              }}>
               ONLINE CONSULTATION
             </Button>
-            <Button appearance="outline" onPress={() => setIsInWalkIn(true)}>
+            <Button
+              appearance="outline"
+              onPress={() => {
+                setIsInWalkIn(true);
+                setIsInMap(true);
+              }}>
               WALK-IN CONSULTATION
             </Button>
           </View>
@@ -61,10 +74,20 @@ const Consultation = ({navigation, route}) => {
       )}
 
       {isInOnline && (
-        <VetList navigation={navigation} setIsLoading={setIsLoading} />
+        <VetList
+          navigation={navigation}
+          setIsLoading={setIsLoading}
+          isInList={isInVetList}
+          setIsInList={setIsInVetList}
+        />
       )}
       {isInWalkIn && (
-        <Map navigation={navigation} setIsLoading={setIsLoading} />
+        <Map
+          navigation={navigation}
+          setIsLoading={setIsLoading}
+          isInMap={isInMap}
+          setIsInMap={setIsInMap}
+        />
       )}
 
       <Modal visible={isLoading}>

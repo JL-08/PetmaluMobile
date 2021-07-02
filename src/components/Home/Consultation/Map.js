@@ -10,13 +10,12 @@ import WalkInBookingForm from './WalkInBookingForm';
 import {getAllVets} from '../../../actions/vetActions';
 import MapMarker from './MapMarker';
 
-const Map = ({navigation, setIsLoading}) => {
-  const dispatch = useDispatch();
-  const vetList = useSelector(state => state.vet.authData);
+const Map = ({navigation, setIsLoading, isInMap, setIsInMap}) => {
   const [position, setPosition] = useState();
   const [vetData, setVetData] = useState();
-  const [isInMap, setIsInMap] = useState(true);
   const [isMapReady, setMapReady] = useState(false);
+  const vetList = useSelector(state => state.vet.authData);
+  const dispatch = useDispatch();
 
   const mapRef = useRef(null);
 
@@ -38,7 +37,7 @@ const Map = ({navigation, setIsLoading}) => {
         console.log(error.code, error.message);
       },
     );
-  }, []);
+  }, [isMapReady]);
 
   useEffect(() => {
     setIsLoading(true);
