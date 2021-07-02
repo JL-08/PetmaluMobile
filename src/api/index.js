@@ -30,3 +30,11 @@ export const getAppointmentsByStatus = data =>
 
 export const updateAppointmentStatus = data =>
   API.post('/updateAppointmentStatus.php', data);
+
+export const createPost = data => API.post('/createPost.php', data);
+
+export const getAllPosts = () => API.get('/getAllPosts.php');
+
+export const updatePost = data => API.post('/updatePost.php', data);
+
+export const deletePost = post_id => API.post('/deletePost.php', {post_id});

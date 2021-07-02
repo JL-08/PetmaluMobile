@@ -58,10 +58,10 @@ export const createAppointment =
   };
 
 export const getAppointmentsByStatus =
-  (appointmentData, setIsLoading) => async dispatch => {
+  (appointmentData, setRefreshing) => async dispatch => {
     try {
       const {data} = await api.getAppointmentsByStatus(appointmentData);
-      setIsLoading(false);
+      setRefreshing(false);
 
       dispatch({type: GET_APPOINTMENTS_BY_STATUS, data});
     } catch (err) {

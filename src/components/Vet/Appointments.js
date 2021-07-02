@@ -7,6 +7,7 @@ import {
   Image,
   ActivityIndicator,
   Linking,
+  RefreshControl,
 } from 'react-native';
 import {Text, List, Button, Modal, Card} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
@@ -25,6 +26,7 @@ const Appointments = ({navigation}) => {
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState();
+  const [refreshing, setRefreshing] = React.useState(false);
   const [isRequestComplete, setIsRequestComplete] = useState(false);
   const [serverMessage, setServerMessage] = useState();
   const [showPrompt, setShowPrompt] = useState(false);
@@ -34,15 +36,26 @@ const Appointments = ({navigation}) => {
 
   useEffect(() => {
     if (vet) {
-      setIsLoading(true);
+      setRefreshing(true);
 
       dispatch(
         getAppointmentsByStatus(
           {vet_id: vet.id, status: 'approved'},
-          setIsLoading,
+          setRefreshing,
         ),
       );
     }
+  }, [vet]);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    dispatch(
+      getAppointmentsByStatus(
+        {vet_id: vet.id, status: 'approved'},
+        setRefreshing,
+      ),
+    );
   }, []);
 
   const handleProceedToBrowser = () => {
@@ -193,6 +206,9 @@ const Appointments = ({navigation}) => {
           style={{backgroundColor: 'rgba(52, 52, 52, 0.0)'}}
           data={appointments}
           renderItem={renderItem}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       ) : (
         <View style={styles.nullMessageContainer}>

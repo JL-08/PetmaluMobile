@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {View, StyleSheet, ActivityIndicator} from 'react-native';
 import {Input, Button, Text, Modal, Card} from '@ui-kitten/components';
@@ -6,7 +6,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-import {createPost} from '../../actions/postActions';
+import {createPost, createPostWithImg} from '../../actions/postActions';
 
 const CreatePost = ({navigation}) => {
   const [fileName, setFileName] = useState('');
@@ -21,23 +21,39 @@ const CreatePost = ({navigation}) => {
 
   const handleSubmit = () => {
     setIsLoading(true);
-    dispatch(
-      createPost(
-        {title, body, vet_id: vet.id},
-        fileBase64,
-        setIsLoading,
-        setIsRequestComplete,
-        setServerMessage,
-      ),
-    );
+
+    if (fileBase64 && fileName) {
+      dispatch(
+        createPostWithImg(
+          {title, body, vet_id: vet.id},
+          fileBase64,
+          setIsLoading,
+          setIsRequestComplete,
+          setServerMessage,
+        ),
+      );
+    } else {
+      dispatch(
+        createPost(
+          {title, body, vet_id: vet.id},
+          setIsLoading,
+          setIsRequestComplete,
+          setServerMessage,
+        ),
+      );
+    }
   };
 
   const handleModalButton = () => {
     setIsRequestComplete(false);
 
     setTimeout(() => {
-      navigation.goBack();
-    }, 1000);
+      navigation.navigate({
+        name: 'Vet Posts',
+        params: {isActionDone: Date.now()},
+        merge: true,
+      });
+    }, 500);
   };
 
   const truncateString = (str, num) => {

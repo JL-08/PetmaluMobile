@@ -32,7 +32,7 @@ const VetHome = ({navigation}) => {
               activeBackgroundColor: '#eee',
             }}>
             <Tab.Screen
-              name="Home"
+              name="Vet Posts"
               component={Posts}
               options={{
                 tabBarLabel: 'Home',

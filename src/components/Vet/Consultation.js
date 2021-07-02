@@ -22,8 +22,8 @@ import {
 
 const Consultation = ({navigation}) => {
   const [visible, setVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [isRequestComplete, setIsRequestComplete] = useState(false);
   const [serverMessage, setServerMessage] = useState();
   const [showPrompt, setShowPrompt] = useState(false);

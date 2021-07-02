@@ -1,86 +1,146 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  View,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
 import {Card, List, Text, Button, Divider, Modal} from '@ui-kitten/components';
 import ContentTitle from './ContentTitle';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-const data = new Array(8).fill({
-  title: 'Item',
-});
+import moment from 'moment';
 
-const Posts = ({navigation}) => {
+import {getAllPosts, deletePost} from '../../actions/postActions';
+
+const Posts = ({navigation, route}) => {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [isRequestComplete, setIsRequestComplete] = useState(false);
+  const [serverMessage, setServerMessage] = useState();
+  const [postToDelete, setPostToDelete] = useState();
+  const [refreshToken, setRefreshToken] = useState();
+  const posts = useSelector(state => state.post.postData);
+  const vet = useSelector(state => state.auth.authVetData);
+  const dispatch = useDispatch();
 
-  const renderItemHeader = (headerProps, info) => (
+  useEffect(() => {
+    setRefreshing(true);
+    dispatch(getAllPosts(setRefreshing));
+  }, [route?.params?.isActionDone, refreshToken]);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    dispatch(getAllPosts(setRefreshing));
+  }, []);
+
+  const handleDelete = () => {
+    setIsDeleting(false);
+    setRefreshing(true);
+
+    dispatch(
+      deletePost(
+        postToDelete,
+        setRefreshing,
+        setIsRequestComplete,
+        setServerMessage,
+      ),
+    );
+  };
+
+  const renderItemHeader = (headerProps, item) => (
     <View {...headerProps}>
       <View style={styles.row}>
         <Text style={{fontWeight: 'bold', flex: 1}} category="h6">
-          Title 1
+          {item.title}
         </Text>
         <Text style={{color: '#888', alignSelf: 'flex-end'}} category="c1">
-          06/20/2021 9:00PM
+          {moment(item.created_at).format('MMM DD, YYYY hh:mm A')}
         </Text>
       </View>
-      <Divider style={{marginVertical: 10}} />
-      <Image
-        style={styles.img}
-        source={require('../../images/post-sample-img.png')}
-      />
+      {item.img_name && (
+        <>
+          <Divider style={{marginVertical: 10}} />
+          <Image
+            style={styles.img}
+            source={{
+              uri: `http://10.0.2.2/petsmalu/upload/images/${item.img_name}`,
+            }}
+          />
+        </>
+      )}
     </View>
   );
 
-  const renderItemFooter = footerProps => (
+  const renderItemFooter = (footerProps, item) => (
     <View style={styles.row}>
       <View style={{flex: 1}}>
-        <Text {...footerProps}>By Wikipedia</Text>
+        <Text {...footerProps}>By: {item.vet_name}</Text>
       </View>
-      <View style={styles.row}>
-        <Button
-          appearance="ghost"
-          status="basic"
-          onPress={() => navigation.push('Edit Post')}>
-          Edit
-        </Button>
-        <Button
-          appearance="ghost"
-          status="basic"
-          onPress={() => setIsDeleting(true)}>
-          Delete
-        </Button>
-      </View>
+      {item.vet_name === vet.name && (
+        <View style={styles.row}>
+          <Button
+            appearance="ghost"
+            status="basic"
+            onPress={() => navigation.push('Edit Post', {...item})}>
+            Edit
+          </Button>
+          <Button
+            appearance="ghost"
+            status="basic"
+            onPress={() => {
+              setIsDeleting(true), setPostToDelete(item.id);
+            }}>
+            Delete
+          </Button>
+        </View>
+      )}
     </View>
   );
 
-  const renderItem = info => (
+  const renderItem = ({item}) => (
     <Card
       style={styles.item}
       status="basic"
-      header={headerProps => renderItemHeader(headerProps, info)}
-      footer={renderItemFooter}>
-      <Text>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text ever
-        since the 1500s, when an unknown printer took a galley of type and
-        scrambled it to make a type specimen book. It has survived not only five
-        centuries, but also the leap into electronic typesetting, remaining
-        essentially unchanged.
-      </Text>
+      header={headerProps => renderItemHeader(headerProps, item)}
+      footer={footerProps => renderItemFooter(footerProps, item)}>
+      <Text>{item.body}</Text>
     </Card>
   );
 
   return (
     <View style={styles.container}>
-      <ContentTitle title="Latest Posts" />
-      <Button
+      <View style={{...styles.row, alignItems: 'center', marginVertical: 10}}>
+        <Text style={styles.contentTitle} category="h5">
+          Latest Posts
+        </Text>
+        <Button
+          size="small"
+          appearance="ghost"
+          status="basic"
+          onPress={() => navigation.push('Create a New Post')}
+          accessoryLeft={() => <Icon name="plus" size={24} color="#aaa" />}>
+          CREATE POST
+        </Button>
+      </View>
+      {/* <Button
         style={styles.floatBtn}
         onPress={() => navigation.push('Create a New Post')}>
         <Icon name="plus" size={24} color="white" />
-      </Button>
+      </Button> */}
       <List
         contentContainerStyle={styles.contentContainer}
-        data={data}
+        data={posts}
         renderItem={renderItem}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
+
       <Modal visible={isDeleting}>
         <Card disabled={true} style={styles.modal}>
           <View style={styles.modalText}>
@@ -88,7 +148,7 @@ const Posts = ({navigation}) => {
           </View>
           <View style={{...styles.row, ...styles.btnContainer}}>
             <Button
-              //onPress={handleModalButton}
+              onPress={handleDelete}
               style={styles.modalBtn}
               size="small"
               status="danger"
@@ -105,6 +165,29 @@ const Posts = ({navigation}) => {
           </View>
         </Card>
       </Modal>
+
+      <Modal visible={isRequestComplete}>
+        <Card disabled={true} style={styles.modal}>
+          <View style={styles.modalText}>
+            <Text>{serverMessage}</Text>
+          </View>
+          <Button
+            onPress={() => {
+              setIsRequestComplete(false);
+              setRefreshToken(Date.now());
+            }}
+            style={styles.modalBtn}
+            appearance="ghost">
+            OK
+          </Button>
+        </Card>
+      </Modal>
+
+      <Modal visible={isLoading}>
+        <Card disabled={true}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </Card>
+      </Modal>
     </View>
   );
 };
@@ -113,6 +196,8 @@ const styles = StyleSheet.create({
   container: {
     padding: 15,
     position: 'relative',
+    paddingBottom: 80,
+    paddingTop: 0,
   },
   contentContainer: {
     paddingHorizontal: 8,
@@ -120,13 +205,15 @@ const styles = StyleSheet.create({
   },
   img: {
     alignSelf: 'center',
+    width: 400,
+    height: 300,
   },
   floatBtn: {
     width: 60,
     height: 60,
     borderRadius: 30,
     position: 'absolute',
-    bottom: '13%',
+    top: '13%',
     right: '10%',
     zIndex: 10,
   },
@@ -145,6 +232,10 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     justifyContent: 'space-around',
+  },
+  contentTitle: {
+    fontWeight: 'bold',
+    flex: 1,
   },
 });
 
