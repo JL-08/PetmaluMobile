@@ -10,8 +10,7 @@ import WalkInBookingForm from './WalkInBookingForm';
 import {getAllVets} from '../../../actions/vetActions';
 import MapMarker from './MapMarker';
 
-const Map = ({navigation, setIsLoading, isInMap, setIsInMap}) => {
-  const [position, setPosition] = useState();
+const Map = ({navigation, setIsLoading, isInMap, setIsInMap, position}) => {
   const [vetData, setVetData] = useState();
   const [isMapReady, setMapReady] = useState(false);
   const vetList = useSelector(state => state.vet.authData);
@@ -23,21 +22,21 @@ const Map = ({navigation, setIsLoading, isInMap, setIsInMap}) => {
     setMapReady(true);
   }, [mapRef, setMapReady]);
 
-  useEffect(() => {
-    Geolocation.getCurrentPosition(
-      position => {
-        setPosition({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
-        });
-      },
-      error => {
-        console.log(error.code, error.message);
-      },
-    );
-  }, [isMapReady]);
+  // useEffect(() => {
+  //   Geolocation.getCurrentPosition(
+  //     position => {
+  //       setPosition({
+  //         latitude: position.coords.latitude,
+  //         longitude: position.coords.longitude,
+  //         latitudeDelta: 0.001,
+  //         longitudeDelta: 0.001,
+  //       });
+  //     },
+  //     error => {
+  //       console.log(error.code, error.message);
+  //     },
+  //   );
+  // }, [isMapReady]);
 
   useEffect(() => {
     setIsLoading(true);

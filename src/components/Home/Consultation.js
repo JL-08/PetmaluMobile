@@ -20,6 +20,7 @@ const Consultation = ({navigation, route}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInMap, setIsInMap] = useState(false);
   const [isInVetList, setIsInVetList] = useState(false);
+  const [position, setPosition] = useState();
 
   useEffect(() => {
     if (route?.params?.isBookingDone) {
@@ -28,14 +29,32 @@ const Consultation = ({navigation, route}) => {
     }
   }, [route?.params?.isBookingDone]);
 
+  useEffect(() => {
+    Geolocation.getCurrentPosition(
+      position => {
+        setPosition({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
+        });
+      },
+      error => {
+        console.log(error.code, error.message);
+      },
+    );
+  }, []);
+
   const goToTypeSelection = () => {
     setIsInOnline(false);
     setIsInWalkIn(false);
+    setIsInMap(false);
+    setIsInVetList(false);
   };
 
   return (
     <View style={styles.container}>
-      {(isInOnline || isInWalkIn) && isInVetList && isInMap && (
+      {(isInVetList || isInMap) && (
         <TouchableOpacity
           style={{
             marginVertical: 10,
@@ -87,6 +106,7 @@ const Consultation = ({navigation, route}) => {
           setIsLoading={setIsLoading}
           isInMap={isInMap}
           setIsInMap={setIsInMap}
+          position={position}
         />
       )}
 
