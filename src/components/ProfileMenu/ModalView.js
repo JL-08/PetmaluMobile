@@ -38,7 +38,8 @@ const ModalView = ({styles, visible, setVisible, appointment}) => {
                   {moment(appointment.start_date).format('MMMM DD YYYY, dddd')}
                 </Text>
                 <Text category="p1">
-                  {moment(appointment.start_date).format('hh:mm A')}
+                  {moment(appointment.start_date).format('hh:mm A')} -{' '}
+                  {moment(appointment.end_date).format('hh:mm A')}
                 </Text>
               </View>
             </View>
@@ -60,11 +61,9 @@ const ModalView = ({styles, visible, setVisible, appointment}) => {
                 <View>
                   <Text category="p1">Completed</Text>
                   <Text category="p1">
-                    {appointment.is_completed
-                      ? 'Completed'
-                      : appointment.is_approved
-                      ? 'Approved'
-                      : 'Pending'}
+                    {appointment &&
+                      appointment.status.charAt(0).toUpperCase() +
+                        appointment.status.slice(1)}
                   </Text>
                 </View>
               </View>
@@ -105,7 +104,7 @@ const modalStyles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modal: {
-    maxWidth: '100%',
+    minWidth: '85%',
   },
   btn: {
     marginTop: 10,

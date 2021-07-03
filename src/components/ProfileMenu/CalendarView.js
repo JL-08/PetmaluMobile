@@ -18,15 +18,38 @@ const CalendarView = ({route}) => {
 
   const appointmentDates = route.params.appointmentList.map(appointment => ({
     date: appointment.start_date,
+    end_date: appointment.end_date,
     vetName: appointment.vet_name,
+    status: appointment.status,
     ...dateStyle,
   }));
 
   const renderItem = ({item}) => (
-    <ListItem
-      title={moment(item.date).format('hh:mm A')}
-      description={`Appointment with Dr. ${item.vetName}`}
-    />
+    <ListItem>
+      <View style={styles.itemContainer}>
+        <View style={styles.itemDetails}>
+          <Text style={styles.bold}>
+            {moment(item.date).format('hh:mm A')} -{' '}
+            {moment(item.end_date).format('hh:mm A')}
+          </Text>
+          <Text category="s1">{`Appointment with ${item.vetName}`}</Text>
+        </View>
+        <View style={styles.statusContainer}>
+          <Text
+            category="c1"
+            style={
+              item.status === 'approved'
+                ? {color: 'green'}
+                : item.status === 'rejected' || item.status === 'cancelled'
+                ? {color: 'red'}
+                : {}
+            }>
+            {item.status &&
+              item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+          </Text>
+        </View>
+      </View>
+    </ListItem>
   );
 
   useEffect(() => {
@@ -88,6 +111,18 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     maxHeight: 170,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+  },
+  itemDetails: {
+    flex: 1,
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  statusContainer: {
+    alignContent: 'center',
   },
 });
 

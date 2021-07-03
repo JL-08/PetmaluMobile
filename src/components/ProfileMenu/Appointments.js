@@ -6,6 +6,7 @@ import {
   ImageBackground,
   Image,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import {Text, List, Button, Modal, Card} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
@@ -18,6 +19,7 @@ const Appointments = ({navigation}) => {
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.authData);
   const appointmentList = useSelector(
@@ -25,8 +27,13 @@ const Appointments = ({navigation}) => {
   );
 
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(getAllUserAppointments(user.user_id, setIsLoading));
+    setRefreshing(true);
+    dispatch(getAllUserAppointments(user.user_id, setRefreshing));
+  }, []);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    dispatch(getAllUserAppointments(user.user_id, setRefreshing));
   }, []);
 
   const renderItem = info => (
@@ -53,7 +60,8 @@ const Appointments = ({navigation}) => {
               {moment(info.item.start_date).format('MMMM DD YYYY, dddd')}
             </Text>
             <Text category="p2">
-              {moment(info.item.start_date).format('hh:mm A')}
+              {moment(info.item.start_date).format('hh:mm A')} -{' '}
+              {moment(info.item.end_date).format('hh:mm A')}
             </Text>
           </View>
         </View>
@@ -96,11 +104,20 @@ const Appointments = ({navigation}) => {
         }>
         CHECK CALENDAR
       </Button>
-      <List
-        style={{backgroundColor: 'rgba(52, 52, 52, 0.0)'}}
-        data={appointmentList}
-        renderItem={renderItem}
-      />
+      {appointmentList ? (
+        <List
+          style={{backgroundColor: 'rgba(52, 52, 52, 0.0)'}}
+          data={appointmentList}
+          renderItem={renderItem}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
+      ) : (
+        <View style={styles.nullMessageContainer}>
+          <Text>Nothing to display here...</Text>
+        </View>
+      )}
 
       <ModalView
         styles={styles}
@@ -149,6 +166,11 @@ const styles = StyleSheet.create({
   },
   calendarBtn: {
     marginTop: 10,
+  },
+  nullMessageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 export default Appointments;
