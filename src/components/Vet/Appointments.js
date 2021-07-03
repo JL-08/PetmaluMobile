@@ -135,7 +135,8 @@ const Appointments = ({navigation}) => {
               {moment(item.start_date).format('MMMM DD YYYY, dddd')}
             </Text>
             <Text category="p2">
-              {moment(item.start_date).format('hh:mm A')}
+              {moment(item.start_date).format('hh:mm A')} -{' '}
+              {moment(item.end_date).format('hh:mm A')}
             </Text>
           </View>
         </View>

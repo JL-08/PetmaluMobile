@@ -38,16 +38,16 @@ const CalendarView = () => {
   };
 
   useEffect(() => {
-    if (vet) {
-      setIsLoading(true);
-      dispatch(getAllVetAppointments(vet.id, setIsLoading));
-    }
-  }, []);
+    console.log('vet', vet);
+    setIsLoading(true);
+    dispatch(getAllVetAppointments(vet.id, setIsLoading));
+  }, [vet]);
 
   useEffect(() => {
     if (appointments) {
       const styledDates = appointments.map(appointment => ({
         date: appointment.start_date,
+        end_date: appointment.end_date,
         userName: appointment.user_name,
         status: appointment.status,
         ...dateStyle,
@@ -55,7 +55,7 @@ const CalendarView = () => {
 
       setAppointmentDates(styledDates);
     }
-  }, [vet]);
+  }, [appointments]);
 
   useEffect(() => {
     if (appointmentDates) {
@@ -73,7 +73,10 @@ const CalendarView = () => {
     <ListItem>
       <View style={styles.itemContainer}>
         <View style={styles.itemDetails}>
-          <Text style={styles.bold}>{moment(item.date).format('hh:mm A')}</Text>
+          <Text style={styles.bold}>
+            {moment(item.date).format('hh:mm A')} -{' '}
+            {moment(item.end_date).format('hh:mm A')}
+          </Text>
           <Text>{`Appointment with ${item.userName}`}</Text>
         </View>
         {console.log('item', item)}
@@ -103,6 +106,7 @@ const CalendarView = () => {
         padding: 10,
       }}>
       <View style={styles.container}>
+        {console.log(appointmentDates)}
         <CalendarPicker
           todayBackgroundColor="#CFCCF4"
           selectedStartDate={date}
