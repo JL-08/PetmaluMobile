@@ -86,10 +86,10 @@ const Appointments = ({navigation}) => {
         flex: 1,
         padding: 10,
       }}>
-      <Text style={{color: '#555'}} category="p1">
+      {/* <Text style={{color: '#555'}} category="p1">
         Note: Booking fee will be completely refuned if the veterinarian cancels
         or did not approve your appointment after 24 hours of booking
-      </Text>
+      </Text> */}
       <Button
         style={styles.calendarBtn}
         appearance="outline"

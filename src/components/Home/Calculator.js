@@ -9,6 +9,7 @@ import {
   Text,
 } from '@ui-kitten/components';
 import ContentTitle from './ContentTitle';
+import CalcResults from './CalcResults';
 
 const petTypes = ['Dog', 'Cat'];
 
@@ -19,6 +20,7 @@ const Calculator = () => {
   const [ribCage, setRibCage] = React.useState();
   const [legLength, setLegLength] = React.useState();
   const [BMI, setBMI] = React.useState(0);
+  const [BCS, setBCS] = React.useState(0);
 
   useEffect(() => {
     setHeight(null);
@@ -28,10 +30,45 @@ const Calculator = () => {
     setBMI(0);
   }, [selectedIndex]);
 
-  const calculateBCS = () => {
-    const lbs = weight * 2.205;
+  const calculateBMI = () => {
+    const lbs = weight / 0.45;
     const BMI = (lbs * 703) / (height * height);
-    setBMI(BMI);
+    // const BMI = lbs / height;
+
+    setBMI(Math.round(BMI));
+    setBCS(calculateBCS(Math.round(BMI)));
+  };
+
+  const calculateBCS = bmi => {
+    console.log(bmi);
+    if (bmi >= 1 && bmi <= 16) {
+      return 1;
+    }
+    if (bmi >= 17 && bmi <= 31) {
+      return 2;
+    }
+    if (bmi >= 32 && bmi <= 47) {
+      return 3;
+    }
+    if (bmi >= 48 && bmi <= 63) {
+      return 4;
+    }
+    if (bmi >= 64 && bmi <= 79) {
+      return 5;
+    }
+    if (bmi >= 80 && bmi <= 95) {
+      return 6;
+    }
+    if (bmi >= 96 && bmi <= 111) {
+      return 7;
+    }
+    if (bmi >= 112 && bmi <= 127) {
+      return 8;
+    }
+    if (bmi >= 128 && bmi <= 143) {
+      return 9;
+    }
+    return 0;
   };
 
   const displayBMI = () => {
@@ -39,48 +76,54 @@ const Calculator = () => {
       return '';
     }
 
-    if (BMI > 256) {
+    if (!BMI || BMI > 143) {
       return 'invalid input';
     } else {
-      return Math.round(BMI * 100) / 100;
+      return BMI;
     }
   };
 
   const getBCS = () => {
-    if (BMI === 0) {
+    if (BCS === 0) {
       return '';
     }
 
-    if (BMI < 63) {
-      return 'Underweight';
+    if (BCS >= 1 && BCS <= 3) {
+      return `(${BCS}) Underweight`;
     }
-    if (BMI >= 92 && BMI <= 256) {
-      return 'Overweight';
+    if (BCS >= 4 && BCS <= 5) {
+      return `(${BCS}) Ideal weight`;
     }
-
-    if (BMI > 256) {
-      return '';
-    } else {
-      return 'Ideal weight';
+    if (BCS >= 6 && BCS <= 9) {
+      return `(${BCS}) Overweight`;
     }
+    return '';
   };
 
   const getBodyFat = () => {
-    if (BMI === 0) {
+    if (BCS === 0) {
       return '';
     }
 
-    if (BMI < 63) {
-      return 'below 15%';
-    }
-    if (BMI >= 92 && BMI <= 256) {
-      return 'above 25%';
+    if (BCS === 4 || BCS === 5) {
+      return '15-24%';
     }
 
-    if (BMI > 256) {
-      return '';
-    } else {
-      return 'Ideal weight';
+    switch (BCS) {
+      case 6:
+        return '25-29%';
+
+      case 7:
+        return '30-34%';
+
+      case 8:
+        return '35-39%';
+
+      case 9:
+        return '40-45%';
+
+      default:
+        return 'less than 15%';
     }
   };
 
@@ -100,15 +143,21 @@ const Calculator = () => {
             style={styles.input}
             value={height}
             label="Height"
+            keyboardType="number-pad"
             placeholder="inch"
-            onChangeText={e => setHeight(e)}
+            onChangeText={e => {
+              setHeight(e);
+            }}
           />
           <Input
             style={styles.input}
             value={weight}
             label="Weight"
             placeholder="kg"
-            onChangeText={e => setWeight(e)}
+            keyboardType="number-pad"
+            onChangeText={e => {
+              setWeight(e);
+            }}
           />
         </View>
       ) : (
@@ -118,6 +167,7 @@ const Calculator = () => {
             value={ribCage}
             label="Rib Cage"
             placeholder="inch"
+            keyboardType="number-pad"
             onChangeText={e => setRibCage(e)}
           />
           <Input
@@ -125,12 +175,13 @@ const Calculator = () => {
             value={legLength}
             label="Leg Length"
             placeholder="inch"
+            keyboardType="number-pad"
             onChangeText={e => setLegLength(e)}
           />
         </View>
       )}
 
-      <Button style={styles.btn} size="small" onPress={calculateBCS}>
+      <Button style={styles.btn} size="small" onPress={calculateBMI}>
         Calculate
       </Button>
       <View style={styles.resultContainer}>
@@ -142,9 +193,11 @@ const Calculator = () => {
           </View>
           <View style={styles.row}>
             <Text>Ideal BCS: </Text>
-            <Text style={styles.bold}>
-              {petTypes[selectedIndex] === 'Dog' ? '63-92' : '15-29'}
-            </Text>
+            {BMI > 0 && BMI <= 143 && (
+              <Text style={styles.bold}>
+                {petTypes[selectedIndex] === 'Dog' ? '63-92' : '15-29'}
+              </Text>
+            )}
           </View>
           <View style={styles.row}>
             <Text>Body Condition Score: </Text>
@@ -156,25 +209,7 @@ const Calculator = () => {
           </View>
         </View>
         <Text style={styles.recommendation}>RECOMMENDATION</Text>
-        {BMI != 0 && (
-          <View>
-            <Text category="c1">
-              • Try reducing portion size of your pet's food intake little by
-              little
-            </Text>
-            <Text category="c1">
-              • Keep track of the treats you have been giving as they can be
-              high in calories
-            </Text>
-            <Text category="c1">
-              • Substitute junk foods to healthy organic foods and keep the
-              volume of the food in moderation
-            </Text>
-            <Text category="c1">
-              • Follow your veterinarian's advice to the food intake of your pet
-            </Text>
-          </View>
-        )}
+        {BMI != 0 && <CalcResults BCS={BCS} />}
       </View>
     </View>
   );
