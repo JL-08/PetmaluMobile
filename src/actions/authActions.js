@@ -123,3 +123,14 @@ export const verify =
       console.log(err);
     }
   };
+
+export const getUser = (user_id, setIsLoading) => async dispatch => {
+  try {
+    const {data} = await api.getUser(user_id);
+    setIsLoading(false);
+
+    dispatch({type: AUTH, data});
+  } catch (err) {
+    console.log(err);
+  }
+};

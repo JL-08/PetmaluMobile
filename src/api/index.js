@@ -38,3 +38,11 @@ export const getAllPosts = () => API.get('/getAllPosts.php');
 export const updatePost = data => API.post('/updatePost.php', data);
 
 export const deletePost = post_id => API.post('/deletePost.php', {post_id});
+
+export const getUser = user_id => API.post('/getUser.php', {user_id});
+
+export const updateUserDetails = formData =>
+  API.post('/updateUserDetails.php', formData);
+
+export const updateUserPassword = formData =>
+  API.post('/updateUserPassword.php', formData);
