@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {Text} from '@ui-kitten/components';
 
-const CalcResults = ({BCS}) => {
+const CalcResults = ({BCS, type}) => {
   //   switch (BCS) {
   //     case 1:
   //     case 2:
@@ -65,11 +65,21 @@ const CalcResults = ({BCS}) => {
 
   return (
     <View>
-      {BCS >= 1 && BCS <= 3 ? (
+      {type === 'Dog' ? (
+        BCS >= 1 && BCS <= 3 ? (
+          <Underweight />
+        ) : BCS >= 4 && BCS <= 5 ? (
+          <Ideal />
+        ) : BCS >= 6 && BCS <= 9 ? (
+          <Overweight />
+        ) : (
+          <View></View>
+        )
+      ) : BCS >= 1 && BCS <= 4 ? (
         <Underweight />
-      ) : BCS >= 4 && BCS <= 5 ? (
+      ) : BCS >= 5 && BCS <= 6 ? (
         <Ideal />
-      ) : BCS >= 6 && BCS <= 9 ? (
+      ) : BCS >= 7 && BCS <= 9 ? (
         <Overweight />
       ) : (
         <View></View>

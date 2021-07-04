@@ -41,7 +41,7 @@ export const login =
     try {
       const {data} = await api.login(formData);
       setIsLoading(false);
-
+      console.log(data);
       if (
         data.includes(
           'Incorrect email or password' || data.includes('Connection Failed'),

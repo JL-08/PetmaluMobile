@@ -27,48 +27,105 @@ const Calculator = () => {
     setWeight(null);
     setRibCage(null);
     setLegLength(null);
+    setBCS(0);
     setBMI(0);
   }, [selectedIndex]);
 
   const calculateBMI = () => {
-    const lbs = weight / 0.45;
-    const BMI = (lbs * 703) / (height * height);
-    // const BMI = lbs / height;
+    let BMI;
+
+    if (petTypes[selectedIndex] === 'Dog') {
+      const lbs = weight / 0.45;
+      BMI = (lbs * 703) / (height * height);
+      // const BMI = lbs / height;
+    }
+    if (petTypes[selectedIndex] === 'Cat') {
+      BMI = ((((ribCage / 0.7062) - legLength) / 0.9156) - legLength) * 2.54; // prettier-ignore
+    }
 
     setBMI(Math.round(BMI));
     setBCS(calculateBCS(Math.round(BMI)));
   };
 
+  //   CAT
+  // 1-4 (UNDERWEIGHT): UNDER 15
+
+  // BCS 1: 1-3
+  // BCS 2: 4-7
+  // BCS 3: 8-11
+  // BCS 4: 12-15
+
+  // 5-6 IDEAL (OVER 15, UNDER 30)
+
+  // BCS 5: 16-24
+  // BCS 6: 25-30
+
+  // 7-9 TOO HEAVY (OVER 30, UNDER 42 OBESE)
+
+  // BCS 7: 31-34
+  // BCS 8: 35-38
+  // BCS 9: 39-42
+
   const calculateBCS = bmi => {
-    console.log(bmi);
-    if (bmi >= 1 && bmi <= 16) {
-      return 1;
+    if (petTypes[selectedIndex] === 'Dog') {
+      if (bmi >= 1 && bmi <= 16) {
+        return 1;
+      }
+      if (bmi >= 17 && bmi <= 31) {
+        return 2;
+      }
+      if (bmi >= 32 && bmi <= 47) {
+        return 3;
+      }
+      if (bmi >= 48 && bmi <= 63) {
+        return 4;
+      }
+      if (bmi >= 64 && bmi <= 79) {
+        return 5;
+      }
+      if (bmi >= 80 && bmi <= 95) {
+        return 6;
+      }
+      if (bmi >= 96 && bmi <= 111) {
+        return 7;
+      }
+      if (bmi >= 112 && bmi <= 127) {
+        return 8;
+      }
+      if (bmi >= 128 && bmi <= 143) {
+        return 9;
+      }
+      return 0;
+    } else {
+      if (bmi >= 1 && bmi <= 3) {
+        return 1;
+      }
+      if (bmi >= 4 && bmi <= 7) {
+        return 2;
+      }
+      if (bmi >= 8 && bmi <= 11) {
+        return 3;
+      }
+      if (bmi >= 12 && bmi <= 15) {
+        return 4;
+      }
+      if (bmi >= 16 && bmi <= 24) {
+        return 5;
+      }
+      if (bmi >= 25 && bmi <= 30) {
+        return 6;
+      }
+      if (bmi >= 31 && bmi <= 34) {
+        return 7;
+      }
+      if (bmi >= 35 && bmi <= 38) {
+        return 8;
+      }
+      if (bmi >= 39 && bmi <= 42) {
+        return 9;
+      }
+      return 0;
     }
-    if (bmi >= 17 && bmi <= 31) {
-      return 2;
-    }
-    if (bmi >= 32 && bmi <= 47) {
-      return 3;
-    }
-    if (bmi >= 48 && bmi <= 63) {
-      return 4;
-    }
-    if (bmi >= 64 && bmi <= 79) {
-      return 5;
-    }
-    if (bmi >= 80 && bmi <= 95) {
-      return 6;
-    }
-    if (bmi >= 96 && bmi <= 111) {
-      return 7;
-    }
-    if (bmi >= 112 && bmi <= 127) {
-      return 8;
-    }
-    if (bmi >= 128 && bmi <= 143) {
-      return 9;
-    }
-    return 0;
   };
 
   const displayBMI = () => {
@@ -76,10 +133,18 @@ const Calculator = () => {
       return '';
     }
 
-    if (!BMI || BMI > 143) {
-      return 'invalid input';
+    if (petTypes[selectedIndex] === 'Dog') {
+      if (!BMI || BMI > 143) {
+        return 'invalid input';
+      } else {
+        return BMI;
+      }
     } else {
-      return BMI;
+      if (!BMI || BMI > 42) {
+        return 'invalid input';
+      } else {
+        return BMI;
+      }
     }
   };
 
@@ -88,16 +153,29 @@ const Calculator = () => {
       return '';
     }
 
-    if (BCS >= 1 && BCS <= 3) {
-      return `(${BCS}) Underweight`;
+    if (petTypes[selectedIndex] === 'Dog') {
+      if (BCS >= 1 && BCS <= 3) {
+        return `(${BCS}) Underweight`;
+      }
+      if (BCS >= 4 && BCS <= 5) {
+        return `(${BCS}) Ideal weight`;
+      }
+      if (BCS >= 6 && BCS <= 9) {
+        return `(${BCS}) Overweight`;
+      }
+      return '';
+    } else {
+      if (BCS >= 1 && BCS <= 4) {
+        return `(${BCS}) Underweight`;
+      }
+      if (BCS >= 5 && BCS <= 6) {
+        return `(${BCS}) Ideal weight`;
+      }
+      if (BCS >= 7 && BCS <= 9) {
+        return `(${BCS}) Overweight`;
+      }
+      return '';
     }
-    if (BCS >= 4 && BCS <= 5) {
-      return `(${BCS}) Ideal weight`;
-    }
-    if (BCS >= 6 && BCS <= 9) {
-      return `(${BCS}) Overweight`;
-    }
-    return '';
   };
 
   const getBodyFat = () => {
@@ -105,25 +183,41 @@ const Calculator = () => {
       return '';
     }
 
-    if (BCS === 4 || BCS === 5) {
-      return '15-24%';
+    if (petTypes[selectedIndex] === 'Dog') {
+      if (BCS === 4 || BCS === 5) {
+        return '15-24%';
+      }
+
+      switch (BCS) {
+        case 6:
+          return '25-29%';
+
+        case 7:
+          return '30-34%';
+
+        case 8:
+          return '35-39%';
+
+        case 9:
+          return '40-45%';
+
+        default:
+          return 'less than 15%';
+      }
     }
 
-    switch (BCS) {
-      case 6:
-        return '25-29%';
-
-      case 7:
-        return '30-34%';
-
-      case 8:
-        return '35-39%';
-
-      case 9:
-        return '40-45%';
-
-      default:
+    if (petTypes[selectedIndex] === 'Cat') {
+      if (BCS >= 1 || BCS <= 4) {
         return 'less than 15%';
+      }
+
+      if (BCS >= 5 || BCS <= 6) {
+        return '15% - 30%';
+      }
+
+      if (BCS >= 7 || BCS <= 9) {
+        return 'over 30%';
+      }
     }
   };
 
@@ -195,7 +289,7 @@ const Calculator = () => {
             <Text>Ideal BCS: </Text>
             {BMI > 0 && BMI <= 143 && (
               <Text style={styles.bold}>
-                {petTypes[selectedIndex] === 'Dog' ? '63-92' : '15-29'}
+                {petTypes[selectedIndex] === 'Dog' ? '63-92' : '16-30'}
               </Text>
             )}
           </View>
@@ -209,7 +303,7 @@ const Calculator = () => {
           </View>
         </View>
         <Text style={styles.recommendation}>RECOMMENDATION</Text>
-        {BMI != 0 && <CalcResults BCS={BCS} />}
+        {BMI != 0 && <CalcResults BCS={BCS} type={petTypes[selectedIndex]} />}
       </View>
     </View>
   );
