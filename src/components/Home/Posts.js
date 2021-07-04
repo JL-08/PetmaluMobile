@@ -13,6 +13,7 @@ const data = new Array(8).fill({
 
 const Posts = () => {
   const [refreshing, setRefreshing] = React.useState(false);
+  const [image, setImage] = React.useState();
   const posts = useSelector(state => state.post.postData);
   const dispatch = useDispatch();
 
@@ -42,8 +43,11 @@ const Posts = () => {
           <Image
             style={styles.img}
             source={{
-              uri: `http://10.0.2.2/petsmalu/upload/images/${item.img_name}`,
+              uri: `http://petsmalu.xyz/uploads/${item.img_name}`,
             }}
+            onError={() =>
+              setImage(`http://petsmalu.xyz/image/no_image_found.png`)
+            }
           />
         </>
       )}

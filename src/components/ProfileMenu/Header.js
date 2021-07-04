@@ -1,17 +1,30 @@
 import {Avatar, Text} from '@ui-kitten/components';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, ImageBackground, Image} from 'react-native';
 
-const Header = ({userName}) => {
+const Header = ({user}) => {
+  const [image, setImage] = useState();
+
+  useEffect(() => {
+    if (user) {
+      setImage(`http://petsmalu.xyz/uploads/${user.img_name}`);
+    }
+  }, [user]);
+
   return (
     <View style={styles.container}>
       <Image
         style={styles.avatar}
-        source={require('../../images/avatar.gif')}
+        source={{
+          uri: image,
+        }}
+        onError={() =>
+          setImage('http://petsmalu.xyz/images/default_avatar.gif')
+        }
       />
       <View style={styles.textLength}>
         <Text style={styles.name} category="h3">
-          {userName.toUpperCase()}
+          {user.name.toUpperCase()}
         </Text>
       </View>
     </View>

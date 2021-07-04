@@ -8,7 +8,7 @@ const ProfileMenu = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Header userName={route.params.user.name} />
+        <Header user={route.params.user} />
       </View>
       <View style={styles.listContainer}>
         <Menu navigation={navigation} />

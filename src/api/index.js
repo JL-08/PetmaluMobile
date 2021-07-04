@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({baseURL: 'http://10.0.2.2/Petsmalu'});
+const API = axios.create({baseURL: 'http://petsmalu.xyz/mobile'});
 
 export const register = (formData, petFormData) =>
   API.post('/register.php', {...formData, ...petFormData});

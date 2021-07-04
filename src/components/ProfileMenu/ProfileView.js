@@ -28,6 +28,7 @@ const ProfileView = () => {
   const [isRequestComplete, setIsRequestComplete] = useState(false);
   const [serverMessage, setServerMessage] = useState();
   const [hasRequestError, setHasRequestError] = useState(false);
+  const [image, setImage] = useState();
   const [email, setEmail] = useState();
   const [mobileNumber, setMobileNumber] = useState();
   const [currentPassword, setCurrentPassword] = useState();
@@ -42,6 +43,12 @@ const ProfileView = () => {
   useEffect(() => {
     clearFields();
   }, [isInEditMode, isInChangePassword]);
+
+  useEffect(() => {
+    if (user) {
+      setImage(`http://petsmalu.xyz/uploads/${user.img_name}`);
+    }
+  }, [user]);
 
   const handleChangeDetails = () => {
     setIsLoading(true);
@@ -182,8 +189,11 @@ const ProfileView = () => {
           <Image
             style={styles.avatar}
             source={{
-              uri: `http://10.0.2.2/petsmalu/upload/images/${user.img_name}`,
+              uri: image,
             }}
+            onError={() =>
+              setImage('http://petsmalu.xyz/images/default_avatar.gif')
+            }
           />
         </TouchableOpacity>
         <Text category="h3" style={styles.name}>

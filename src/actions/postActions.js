@@ -7,7 +7,7 @@ export const createPostWithImg =
   async dispatch => {
     RNFetchBlob.fetch(
       'POST',
-      'http://10.0.2.2/Petsmalu/createPostWithImg.php',
+      'http://petsmalu.xyz/mobile/createPostWithImg.php',
       {
         'Content-Type': 'multipart/form-data',
       },
@@ -76,7 +76,7 @@ export const updatePostWithImg =
   async dispatch => {
     RNFetchBlob.fetch(
       'POST',
-      'http://10.0.2.2/Petsmalu/updatePostWithImg.php',
+      'http://petsmalu.xyz/mobile/updatePostWithImg.php',
       {
         'Content-Type': 'multipart/form-data',
       },

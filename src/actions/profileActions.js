@@ -6,7 +6,7 @@ export const changeProfilePic =
   async dispatch => {
     RNFetchBlob.fetch(
       'POST',
-      'http://10.0.2.2/Petsmalu/updateProfilePic.php',
+      'http://petsmalu.xyz/mobile/updateProfilePic.php',
       {
         'Content-Type': 'multipart/form-data',
       },
@@ -25,6 +25,7 @@ export const changeProfilePic =
     )
       .then(res => {
         setIsLoading(false);
+
         if (res.data.includes('changed')) {
           setServerMessage('Your profile picture has been changed.');
         } else {
