@@ -95,3 +95,29 @@ export const changePetProfilePic =
         console.log(err);
       });
   };
+
+export const registerPet =
+  (
+    formData,
+    setServerMessage,
+    setIsRequestComplete,
+    setHasRequestError,
+    setIsLoading,
+  ) =>
+  async dispatch => {
+    try {
+      console.log(formData);
+      const {data} = await api.registerPet(formData);
+      setIsLoading(false);
+      setServerMessage(data);
+      setIsRequestComplete(true);
+
+      if (!data.includes('Successfully')) {
+        setHasRequestError(true);
+      } else {
+        setHasRequestError(false);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };

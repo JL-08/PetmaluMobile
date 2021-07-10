@@ -20,9 +20,10 @@ import {
 
 import {getAllUserPets} from '../../actions/petActons';
 
-const Pets = ({navigation}) => {
+const Pets = ({route, navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [trigger, setTrigger] = React.useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.authData);
   const pets = useSelector(state => state.pet.petData);
@@ -31,6 +32,15 @@ const Pets = ({navigation}) => {
     setRefreshing(true);
     dispatch(getAllUserPets(user.user_id, setRefreshing));
   }, []);
+
+  useEffect(() => {
+    if (route?.params?.isActionDone) {
+      route.params.isActionDone = false;
+
+      setRefreshing(true);
+      dispatch(getAllUserPets(user.user_id, setRefreshing));
+    }
+  }, [route?.params?.isActionDone]);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
