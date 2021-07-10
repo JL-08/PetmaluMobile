@@ -43,12 +43,15 @@ const FAQs = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    backgroundColor: '#F7F9FC',
+    flex: 1,
   },
   searchBar: {
     marginVertical: 10,
     borderColor: 'black',
     borderWidth: 1,
     borderRadius: 40,
+    backgroundColor: 'white',
   },
 });
 

@@ -62,7 +62,6 @@ const Posts = () => {
 
   const renderItem = ({item}) => (
     <Card
-      style={styles.item}
       status="basic"
       header={headerProps => renderItemHeader(headerProps, item)}
       footer={footerProps => renderItemFooter(footerProps, item)}>
@@ -91,10 +90,12 @@ const styles = StyleSheet.create({
     position: 'relative',
     paddingBottom: 50,
     paddingTop: 0,
+    backgroundColor: '#F7F9FC',
   },
   contentContainer: {
     paddingHorizontal: 8,
     paddingVertical: 4,
+    backgroundColor: 'transparent',
   },
   img: {
     alignSelf: 'center',

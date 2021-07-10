@@ -1,4 +1,4 @@
-import {GET_ALL_USER_PETS} from '../constants/actionTypes';
+import {GET_ALL_USER_PETS, GET_PET} from '../constants/actionTypes';
 
 const petReducer = (state = {petData: null}, action) => {
   switch (action.type) {
@@ -6,6 +6,12 @@ const petReducer = (state = {petData: null}, action) => {
       return {
         ...state,
         petData: action.data,
+      };
+
+    case GET_PET:
+      return {
+        ...state,
+        petDetails: action.data[0],
       };
 
     default:

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {
   IndexPath,
   Select,
@@ -37,10 +37,10 @@ const Calculator = () => {
     if (petTypes[selectedIndex] === 'Dog') {
       const lbs = weight / 0.45;
       BMI = (lbs * 703) / (height * height);
-      // const BMI = lbs / height;
     }
     if (petTypes[selectedIndex] === 'Cat') {
-      BMI = ((((ribCage / 0.7062) - legLength) / 0.9156) - legLength) * 2.54; // prettier-ignore
+      const cm = 2.54;
+      BMI = ((((ribCage / 0.7062) - legLength) / 0.9156) - legLength) * cm; // prettier-ignore
     }
 
     setBMI(Math.round(BMI));
@@ -134,13 +134,13 @@ const Calculator = () => {
     }
 
     if (petTypes[selectedIndex] === 'Dog') {
-      if (!BMI || BMI > 143) {
+      if (!BMI || BMI > 143 || BMI < 0) {
         return 'invalid input';
       } else {
         return BMI;
       }
     } else {
-      if (!BMI || BMI > 42) {
+      if (!BMI || BMI > 42 || BMI < 0) {
         return 'invalid input';
       } else {
         return BMI;
@@ -153,29 +153,50 @@ const Calculator = () => {
       return '';
     }
 
-    if (petTypes[selectedIndex] === 'Dog') {
-      if (BCS >= 1 && BCS <= 3) {
-        return `(${BCS}) Underweight`;
-      }
-      if (BCS >= 4 && BCS <= 5) {
-        return `(${BCS}) Ideal weight`;
-      }
-      if (BCS >= 6 && BCS <= 9) {
-        return `(${BCS}) Overweight`;
-      }
-      return '';
-    } else {
-      if (BCS >= 1 && BCS <= 4) {
-        return `(${BCS}) Underweight`;
-      }
-      if (BCS >= 5 && BCS <= 6) {
-        return `(${BCS}) Ideal weight`;
-      }
-      if (BCS >= 7 && BCS <= 9) {
-        return `(${BCS}) Overweight`;
-      }
-      return '';
+    if (BCS >= 1 && BCS <= 3) {
+      return `(${BCS}) Underweight`;
     }
+    if (BCS >= 4 && BCS <= 5) {
+      return `(${BCS}) Ideal weight`;
+    }
+
+    if (BCS >= 6 && BCS <= 9) {
+      if (petTypes[selectedIndex] === 'Dog') {
+        return `(${BCS}) Overweight`;
+      }
+
+      if (petTypes[selectedIndex] === 'Cat') {
+        if (BCS === 9) {
+          return `(${BCS}) Obese`;
+        }
+        return `(${BCS}) Overweight`;
+      }
+    }
+    return '';
+
+    // if (petTypes[selectedIndex] === 'Dog') {
+    //   if (BCS >= 1 && BCS <= 3) {
+    //     return `(${BCS}) Underweight`;
+    //   }
+    //   if (BCS >= 4 && BCS <= 5) {
+    //     return `(${BCS}) Ideal weight`;
+    //   }
+    //   if (BCS >= 6 && BCS <= 9) {
+    //     return `(${BCS}) Overweight`;
+    //   }
+    //   return '';
+    // } else {
+    //   if (BCS >= 1 && BCS <= 4) {
+    //     return `(${BCS}) Underweight`;
+    //   }
+    //   if (BCS >= 5 && BCS <= 6) {
+    //     return `(${BCS}) Ideal weight`;
+    //   }
+    //   if (BCS >= 7 && BCS <= 9) {
+    //     return `(${BCS}) Overweight`;
+    //   }
+    //   return '';
+    // }
   };
 
   const getBodyFat = () => {
@@ -184,14 +205,11 @@ const Calculator = () => {
     }
 
     if (petTypes[selectedIndex] === 'Dog') {
-      if (BCS === 4 || BCS === 5) {
-        return '15-24%';
+      if (BCS === 5 || BCS === 6) {
+        return '15-29%';
       }
 
       switch (BCS) {
-        case 6:
-          return '25-29%';
-
         case 7:
           return '30-34%';
 
@@ -212,11 +230,15 @@ const Calculator = () => {
       }
 
       if (BCS >= 5 || BCS <= 6) {
-        return '15% - 30%';
+        return '16% - 30%';
       }
 
-      if (BCS >= 7 || BCS <= 9) {
-        return 'over 30%';
+      if (BCS >= 7 || BCS <= 8) {
+        return '31% - 38';
+      }
+
+      if (BCS === 9) {
+        return '39% - 42%';
       }
     }
   };
@@ -303,7 +325,9 @@ const Calculator = () => {
           </View>
         </View>
         <Text style={styles.recommendation}>RECOMMENDATION</Text>
-        {BMI != 0 && <CalcResults BCS={BCS} type={petTypes[selectedIndex]} />}
+        <ScrollView>
+          {BMI != 0 && <CalcResults BCS={BCS} type={petTypes[selectedIndex]} />}
+        </ScrollView>
       </View>
     </View>
   );
@@ -312,6 +336,7 @@ const Calculator = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    backgroundColor: '#F7F9FC',
   },
   contentContainer: {
     paddingHorizontal: 8,
@@ -324,10 +349,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   topMargin: {
-    margin: 5,
+    marginTop: 5,
   },
   input: {
     flex: 1,
+    backgroundColor: 'white',
   },
   btn: {
     alignSelf: 'flex-start',
@@ -341,7 +367,7 @@ const styles = StyleSheet.create({
   resultContainer: {
     borderRadius: 20,
     paddingHorizontal: 30,
-    paddingVertical: 5,
+    paddingVertical: 10,
     borderWidth: 1,
     backgroundColor: 'white',
     height: '57%',

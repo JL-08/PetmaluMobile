@@ -52,6 +52,7 @@ const AddPet = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    backgroundColor: '#F7F9FC',
   },
   topMargin: {
     marginTop: 10,

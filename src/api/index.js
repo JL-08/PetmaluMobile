@@ -46,3 +46,7 @@ export const updateUserDetails = formData =>
 
 export const updateUserPassword = formData =>
   API.post('/updateUserPassword.php', formData);
+
+export const updatePet = formData => API.post('/updatePet.php', formData);
+
+export const getPet = id => API.post('/getPet.php', {id});

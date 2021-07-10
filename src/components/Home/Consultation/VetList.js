@@ -283,6 +283,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     padding: 20,
     marginVertical: 5,
+    backgroundColor: 'white',
   },
   avatar: {
     width: 50,
