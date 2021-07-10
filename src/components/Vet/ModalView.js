@@ -92,6 +92,9 @@ const modalStyles = StyleSheet.create({
   },
   modal: {
     minWidth: '80%',
+    maxHeight: '80%',
+    alignSelf: 'center',
+    justifyContent: 'center',
   },
   btn: {
     marginTop: 10,

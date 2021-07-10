@@ -33,9 +33,9 @@ const Posts = () => {
         <Text style={{fontWeight: 'bold', flex: 1}} category="h6">
           {item.title}
         </Text>
-        <Text style={{color: '#888', alignSelf: 'flex-end'}} category="c1">
+        {/* <Text style={{color: '#888', alignSelf: 'flex-end'}} category="c1">
           {moment(item.created_at).format('MMM DD, YYYY hh:mm A')}
-        </Text>
+        </Text> */}
       </View>
       {item.img_name && (
         <>
@@ -55,8 +55,10 @@ const Posts = () => {
   );
 
   const renderItemFooter = (footerProps, item) => (
-    <View style={{flex: 1}}>
-      <Text {...footerProps}>By: {item.vet_name}</Text>
+    <View style={{flex: 1, padding: 15}}>
+      <Text style={{color: '#888'}} category="c1">
+        {moment(item.created_at).format('MMM DD, YYYY hh:mm A')}
+      </Text>
     </View>
   );
 

@@ -58,9 +58,6 @@ const Posts = ({navigation, route}) => {
         <Text style={{fontWeight: 'bold', flex: 1}} category="h6">
           {item.title}
         </Text>
-        <Text style={{color: '#888', alignSelf: 'flex-end'}} category="c1">
-          {moment(item.created_at).format('MMM DD, YYYY hh:mm A')}
-        </Text>
       </View>
       {item.img_name && (
         <>
@@ -77,8 +74,11 @@ const Posts = ({navigation, route}) => {
   );
 
   const renderItemFooter = (footerProps, item) => (
-    <View style={styles.row}>
-      <View style={{flex: 1}}>
+    <View style={{...styles.row, padding: 15, alignItems: 'center'}}>
+      <Text {...footerProps} style={{color: '#888'}} category="c1">
+        {moment(item.created_at).format('MMM DD, YYYY hh:mm A')}
+      </Text>
+      {/* <View style={{flex: 1}}>
         <Text {...footerProps}>By: {item.vet_name}</Text>
       </View>
       {item.vet_name === vet.name && (
@@ -98,7 +98,7 @@ const Posts = ({navigation, route}) => {
             Delete
           </Button>
         </View>
-      )}
+      )} */}
     </View>
   );
 
@@ -115,17 +115,18 @@ const Posts = ({navigation, route}) => {
   return (
     <View style={styles.container}>
       <View style={{...styles.row, alignItems: 'center', marginVertical: 10}}>
-        <Text style={styles.contentTitle} category="h5">
+        <ContentTitle title="Latest Posts" />
+        {/* <Text style={styles.contentTitle} category="h5">
           Latest Posts
-        </Text>
-        <Button
+        </Text> */}
+        {/* <Button
           size="small"
           appearance="ghost"
           status="basic"
           onPress={() => navigation.push('Create a New Post')}
           accessoryLeft={() => <Icon name="plus" size={24} color="#aaa" />}>
           CREATE POST
-        </Button>
+        </Button> */}
       </View>
       {/* <Button
         style={styles.floatBtn}
