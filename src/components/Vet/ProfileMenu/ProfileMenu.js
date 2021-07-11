@@ -8,7 +8,10 @@ const ProfileMenu = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Header vetName={route.params.vet.name} />
+        <Header
+          vetName={route.params.vet.name}
+          vetImg={route.params.vet.img_name}
+        />
       </View>
       <View style={styles.listContainer}>
         <Menu navigation={navigation} />

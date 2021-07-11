@@ -1,9 +1,16 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 
 const Header = ({navigation}) => {
+  const [image, setImage] = useState();
   const vet = useSelector(state => state.auth.authVetData);
+
+  useEffect(() => {
+    if (vet) {
+      setImage(`http://petsmalu.xyz/uploads/${vet.img_name}`);
+    }
+  }, [vet]);
 
   return (
     <View style={style.container}>
@@ -12,7 +19,12 @@ const Header = ({navigation}) => {
         onPress={() => navigation.push('Vet Profile Menu', {vet})}>
         <Image
           style={style.avatar}
-          source={require('../../images/avatar.gif')}
+          source={{
+            uri: image,
+          }}
+          onError={() =>
+            setImage('http://petsmalu.xyz/images/default_avatar.gif')
+          }
         />
       </TouchableOpacity>
       <View

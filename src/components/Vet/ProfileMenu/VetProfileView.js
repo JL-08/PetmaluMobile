@@ -1,10 +1,17 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import {View, StyleSheet, Image, ImageBackground} from 'react-native';
 import {Input, Text, Button} from '@ui-kitten/components';
 
 const VetProfileView = () => {
+  const [image, setImage] = useState();
   const vet = useSelector(state => state.auth.authVetData);
+
+  useEffect(() => {
+    if (vet) {
+      setImage(`http://petsmalu.xyz/uploads/${vet.img_name}`);
+    }
+  }, [vet]);
 
   return (
     <ImageBackground
@@ -18,7 +25,12 @@ const VetProfileView = () => {
         style={{...styles.row, justifyContent: 'center', alignItems: 'center'}}>
         <Image
           style={styles.avatar}
-          source={require('../../../images/avatar.gif')}
+          source={{
+            uri: image,
+          }}
+          onError={() =>
+            setImage('http://petsmalu.xyz/images/default_avatar.gif')
+          }
         />
         <Text category="h3" style={styles.name}>
           {vet.name}

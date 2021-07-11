@@ -6,6 +6,14 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import moment from 'moment';
 
 const ModalView = ({styles, visible, setVisible, appointment}) => {
+  const changeImg = item => {
+    if (item.user_img_name === null || item.user_img_name === '') {
+      return 'http://petsmalu.xyz/images/default_avatar.gif';
+    } else {
+      return `http://petsmalu.xyz/uploads/${item.user_img_name}`;
+    }
+  };
+
   return (
     <>
       <Modal
@@ -16,9 +24,12 @@ const ModalView = ({styles, visible, setVisible, appointment}) => {
         <Card disabled={true}>
           <Image
             style={styles.avatar}
-            source={require('../../images/avatar.gif')}
+            source={{
+              uri: appointment && changeImg(appointment),
+            }}
           />
           <View>
+            {/* {console.log(appointment)} */}
             <View>
               <Text category="h6" style={styles.name}>
                 {appointment?.user_name}
@@ -88,7 +99,7 @@ const ModalView = ({styles, visible, setVisible, appointment}) => {
 
 const modalStyles = StyleSheet.create({
   backdrop: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   modal: {
     minWidth: '80%',
