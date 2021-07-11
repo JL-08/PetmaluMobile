@@ -18,6 +18,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import FAIcon from 'react-native-vector-icons/dist/FontAwesome';
 import {default as TimePicker} from 'react-native-date-picker';
@@ -25,8 +26,9 @@ import moment from 'moment';
 
 import {getAllVets} from '../../../actions/vetActions';
 import {getAllUserPets} from '../../../actions/petActons';
+import {checkAppointmentValidity} from '../../../actions/appointmentActions';
 
-const VetList = ({navigation, setIsLoading, isInList, setIsInList}) => {
+const VetList = ({navigation, setIsLoadingCopy, isInList, setIsInList}) => {
   //const [isBookingDone, setIsBookingDone] = useState(false);
   const [selectedVet, setSelectedVet] = useState({});
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -37,6 +39,10 @@ const VetList = ({navigation, setIsLoading, isInList, setIsInList}) => {
   const [reason, setReason] = useState();
   const [isEditingTime, setIsEditingTime] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRequestComplete, setIsRequestComplete] = useState(false);
+  const [serverMessage, setServerMessage] = useState();
+  const [hasRequestError, setHasRequestError] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.authData);
   const vetList = useSelector(state => state.vet.authData);
@@ -87,6 +93,37 @@ const VetList = ({navigation, setIsLoading, isInList, setIsInList}) => {
         .add(duration, 'hours')
         .format('YYYY-MM-DD kk:mm');
     }
+  };
+
+  const handleContinue = () => {
+    setIsLoading(true);
+
+    const appointment = {
+      type: 'online',
+      vet: selectedVet.id,
+      user: user.user_id,
+      date: `${moment(date).format('YYYY-MM-DD')} ${moment(time).format(
+        'kk:mm',
+      )}`,
+      end_date: calculateEndDate(),
+      pet: petList[selectedIndex].id,
+      reason,
+    };
+
+    dispatch(
+      checkAppointmentValidity(
+        appointment,
+        setServerMessage,
+        setIsRequestComplete,
+        setHasRequestError,
+        setIsLoading,
+        navigation,
+      ),
+    );
+  };
+
+  const handleModalButton = () => {
+    setIsRequestComplete(false);
   };
 
   const changeImg = item => {
@@ -244,23 +281,7 @@ const VetList = ({navigation, setIsLoading, isInList, setIsInList}) => {
             onChangeText={e => setReason(e)}
           />
           <View style={styles.row}>
-            <Button
-              style={{flex: 1}}
-              onPress={() =>
-                navigation.push('Booking Details', {
-                  appointment: {
-                    type: 'online',
-                    vet: selectedVet.id,
-                    user: user.user_id,
-                    date: `${moment(date).format('YYYY-MM-DD')} ${moment(
-                      time,
-                    ).format('kk:mm')}`,
-                    end_date: calculateEndDate(),
-                    pet: petList[selectedIndex].id,
-                    reason,
-                  },
-                })
-              }>
+            <Button style={{flex: 1}} onPress={handleContinue}>
               CONTINUE
             </Button>
             <Button onPress={() => setIsInList(true)} appearance="ghost">
@@ -282,6 +303,27 @@ const VetList = ({navigation, setIsLoading, isInList, setIsInList}) => {
           <Button onPress={() => setIsEditingTime(false)} size="small">
             OK
           </Button>
+        </Card>
+      </Modal>
+
+      <Modal visible={isRequestComplete}>
+        <Card disabled={true} style={styles.modal}>
+          <View style={styles.modalText}>
+            <Text>{serverMessage}</Text>
+          </View>
+          <Button
+            onPress={handleModalButton}
+            style={styles.modalBtn}
+            status="basic"
+            appearance="ghost">
+            OK
+          </Button>
+        </Card>
+      </Modal>
+
+      <Modal visible={isLoading}>
+        <Card disabled={true}>
+          <ActivityIndicator size="large" color="#0000ff" />
         </Card>
       </Modal>
     </View>
@@ -344,6 +386,19 @@ const styles = StyleSheet.create({
   },
   labelColor: {
     color: '#A3ADC1',
+  },
+  modal: {
+    minHeight: 200,
+    justifyContent: 'center',
+    alignContent: 'center',
+    borderWidth: 5,
+  },
+  modalText: {
+    height: 150,
+    justifyContent: 'center',
+  },
+  modalBtn: {
+    alignSelf: 'flex-end',
   },
 });
 

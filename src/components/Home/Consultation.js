@@ -88,6 +88,21 @@ const Consultation = ({navigation, route}) => {
               }}>
               WALK-IN CONSULTATION
             </Button>
+            {/* <View style={{marginTop: 10}}>
+              <ContentTitle title="Payments" />
+              <View style={styles.btnContainer}>
+                <Button
+                  style={styles.btn}
+                  appearance="filled"
+                  status="success"
+                  onPress={() => {
+                    setIsInOnline(true);
+                    setIsInVetList(true);
+                  }}>
+                  PAY MY BOOKINGS
+                </Button>
+              </View>
+            </View> */}
           </View>
         </View>
       )}

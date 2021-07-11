@@ -8,10 +8,13 @@ import {
 } from 'react-native';
 import {Text, Button, Modal, Card} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 import {createAppointment} from '../../../actions/appointmentActions';
 
 const BookingDetails = ({route, navigation}) => {
+  const [fileName, setFileName] = useState('');
+  const [fileBase64, setFileBase64] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isRequestComplete, setIsRequestComplete] = useState(false);
   const [serverMessage, setServerMessage] = useState();
@@ -23,6 +26,7 @@ const BookingDetails = ({route, navigation}) => {
     dispatch(
       createAppointment(
         route.params.appointment,
+        fileBase64,
         setServerMessage,
         setIsRequestComplete,
         setHasRequestError,
@@ -42,6 +46,18 @@ const BookingDetails = ({route, navigation}) => {
       });
     }
   };
+
+  const truncateString = (str, num) => {
+    if (str === '') {
+      return 'none';
+    }
+
+    if (str.length <= num) {
+      return str;
+    }
+    return str.slice(0, num) + '...';
+  };
+
   return (
     <View style={styles.container}>
       {console.log(route.params)}
@@ -72,10 +88,44 @@ const BookingDetails = ({route, navigation}) => {
           </Text>
         </View>
       </View>
-      <Text category="p2" style={{color: '#555', ...styles.topMargin}}>
+      {/* <Text category="p2" style={{color: '#555', ...styles.topMargin}}>
         NOTE: Booking fee will be completely refunded if the veterinarian
         cancels or does not accept your appointments after 24hours of booking.
+      </Text> */}
+      <Text style={styles.topMargin}>
+        Follow the steps below in order to proceed with your booking.
       </Text>
+      <Text>1. Go to your GCash app</Text>
+      <Text>2. Send Money to 09xxxxxxxx</Text>
+      <Text>3. Download the receipt upon successful payment</Text>
+      <Text>4. Use the button below to upload the receipt</Text>
+      <Text>5. Press the BOOK APPOINTMENT button</Text>
+      <Text
+        style={{color: '#9BA6BA', marginBottom: 5, marginTop: 10}}
+        category="label">
+        Upload your receipt
+      </Text>
+      <Button
+        style={{...styles.uploadBtn, ...styles.btmargin}}
+        appearance="outline"
+        status="basic"
+        accessoryLeft={() => <Icon name="upload" color="gray" />}
+        onPress={() =>
+          launchImageLibrary({mediaType: 'photo', includeBase64: true}, res => {
+            if (res.didCancel) {
+              console.log('User cancelled image picker');
+            } else if (res.error) {
+              console.log('ImagePicker Error: ', res.error);
+            } else {
+              setFileName(res.assets[0].fileName);
+              setFileBase64(res.assets[0].base64);
+            }
+          })
+        }>
+        {fileName
+          ? `uploaded: ${truncateString(fileName, 30)}`
+          : 'Upload Receipt'}
+      </Button>
       <Button style={styles.topMargin} onPress={handleBookBtn}>
         BOOK APPOINTMENT
       </Button>
@@ -88,7 +138,8 @@ const BookingDetails = ({route, navigation}) => {
           <Button
             onPress={handleModalButton}
             style={styles.modalBtn}
-            size="small">
+            appearance="ghost"
+            status="basic">
             OK
           </Button>
         </Card>
@@ -146,6 +197,9 @@ const styles = StyleSheet.create({
   modalText: {
     height: 150,
     justifyContent: 'center',
+  },
+  modalBtn: {
+    alignSelf: 'flex-end',
   },
 });
 

@@ -31,6 +31,9 @@ export const getAppointmentsByStatus = data =>
 export const updateAppointmentStatus = data =>
   API.post('/updateAppointmentStatus.php', data);
 
+export const checkAppointmentValidity = data =>
+  API.post('/checkAppointmentValidity.php', data);
+
 export const createPost = data => API.post('/createPost.php', data);
 
 export const getAllPosts = () => API.get('/getAllPosts.php');

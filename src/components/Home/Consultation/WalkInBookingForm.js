@@ -1,6 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import FAIcon from 'react-native-vector-icons/dist/FontAwesome';
 import {
   Button,
@@ -19,14 +25,9 @@ import {default as TimePicker} from 'react-native-date-picker';
 import moment from 'moment';
 
 import {getAllUserPets} from '../../../actions/petActons';
+import {checkAppointmentValidity} from '../../../actions/appointmentActions';
 
-const WalkInBookingForm = ({
-  setIsInMap,
-  vetData,
-  setVetData,
-  navigation,
-  setIsLoading,
-}) => {
+const WalkInBookingForm = ({setIsInMap, vetData, setVetData, navigation}) => {
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [reason, setReason] = useState();
@@ -34,6 +35,10 @@ const WalkInBookingForm = ({
   const [selectedDurationUnit, setSelectedDurationUnit] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isEditingTime, setIsEditingTime] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRequestComplete, setIsRequestComplete] = useState(false);
+  const [serverMessage, setServerMessage] = useState();
+  const [hasRequestError, setHasRequestError] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.authData);
   const pets = useSelector(state => state.pet.petData);
@@ -69,6 +74,37 @@ const WalkInBookingForm = ({
         .add(duration, 'hours')
         .format('YYYY-MM-DD kk:mm');
     }
+  };
+
+  const handleContinue = () => {
+    setIsLoading(true);
+
+    const appointment = {
+      type: 'walk-in',
+      vet: vetData.id,
+      user: user.user_id,
+      date: `${moment(date).format('YYYY-MM-DD')} ${moment(time).format(
+        'kk:mm',
+      )}`,
+      end_date: calculateEndDate(),
+      pet: pets[selectedIndex].id,
+      reason,
+    };
+
+    dispatch(
+      checkAppointmentValidity(
+        appointment,
+        setServerMessage,
+        setIsRequestComplete,
+        setHasRequestError,
+        setIsLoading,
+        navigation,
+      ),
+    );
+  };
+
+  const handleModalButton = () => {
+    setIsRequestComplete(false);
   };
 
   const changeImg = item => {
@@ -138,23 +174,7 @@ const WalkInBookingForm = ({
         onChangeText={e => setReason(e)}
       />
       <View style={styles.row}>
-        <Button
-          style={{flex: 1}}
-          onPress={() =>
-            navigation.push('Booking Details', {
-              appointment: {
-                type: 'walk-in',
-                vet: vetData.id,
-                user: user.user_id,
-                date: `${moment(date).format('YYYY-MM-DD')} ${moment(
-                  time,
-                ).format('kk:mm')}`,
-                end_date: calculateEndDate(),
-                pet: pets[selectedIndex].id,
-                reason,
-              },
-            })
-          }>
+        <Button style={{flex: 1}} onPress={handleContinue}>
           CONTINUE
         </Button>
         <Button
@@ -180,6 +200,27 @@ const WalkInBookingForm = ({
           <Button onPress={() => setIsEditingTime(false)} appearance="ghost">
             OK
           </Button>
+        </Card>
+      </Modal>
+
+      <Modal visible={isRequestComplete}>
+        <Card disabled={true} style={styles.modal}>
+          <View style={styles.modalText}>
+            <Text>{serverMessage}</Text>
+          </View>
+          <Button
+            onPress={handleModalButton}
+            style={styles.modalBtn}
+            status="basic"
+            appearance="ghost">
+            OK
+          </Button>
+        </Card>
+      </Modal>
+
+      <Modal visible={isLoading}>
+        <Card disabled={true}>
+          <ActivityIndicator size="large" color="#0000ff" />
         </Card>
       </Modal>
     </View>
@@ -208,6 +249,19 @@ const styles = StyleSheet.create({
   },
   labelColor: {
     color: '#A3ADC1',
+  },
+  modal: {
+    minHeight: 200,
+    justifyContent: 'center',
+    alignContent: 'center',
+    borderWidth: 5,
+  },
+  modalText: {
+    height: 150,
+    justifyContent: 'center',
+  },
+  modalBtn: {
+    alignSelf: 'flex-end',
   },
 });
 
