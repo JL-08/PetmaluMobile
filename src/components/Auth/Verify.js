@@ -13,14 +13,14 @@ const Verify = ({email, code, setCode}) => {
         value={code}
         onChangeText={nextValue => setCode(nextValue)}
       />
-      <View style={styles.row}>
+      {/* <View style={styles.row}>
         <Text style={styles.textMargin} category="s2">
           Didn't receive an email?
         </Text>
         <TouchableOpacity>
           <Text category="s2">Resend email</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

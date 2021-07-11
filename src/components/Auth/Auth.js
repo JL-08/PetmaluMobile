@@ -56,39 +56,63 @@ const Auth = ({navigation}) => {
   const [serverMessage, setServerMessage] = useState();
   const [hasRequestError, setHasRequestError] = useState(false);
   const [hasFormError, setHasFormError] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [promptMessage, setPromptMessage] = useState();
   const dispatch = useDispatch();
 
   const handleButton = async () => {
     if (isInRegister && isInPetForm) {
-      setIsLoading(true);
-      setUserEmail(registerFormData.email);
-      dispatch(
-        register(
-          registerFormData,
-          petFormData,
-          setServerMessage,
-          setIsRequestComplete,
-          setHasRequestError,
-          setIsLoading,
-        ),
-      );
+      if (isValidInputs(petFormData, 'registerPet')) {
+        setIsLoading(true);
+        setUserEmail(registerFormData.email);
+        dispatch(
+          register(
+            registerFormData,
+            petFormData,
+            setServerMessage,
+            setIsRequestComplete,
+            setHasRequestError,
+            setIsLoading,
+          ),
+        );
+      } else {
+        setPromptMessage(
+          'Please fill out all the fields and input valid values.',
+        );
+        setShowPrompt(true);
+      }
     } else if (!isInRegister && !isInVerify) {
-      setIsLoading(true);
-      setUserEmail(loginFormData.email);
-      dispatch(
-        login(
-          loginFormData,
-          setServerMessage,
-          setIsRequestComplete,
-          setHasRequestError,
-          setIsLoading,
-          navigation,
-          goToVerify,
-        ),
-      );
+      if (isValidInputs(loginFormData, 'login')) {
+        setIsLoading(true);
+        setUserEmail(loginFormData.email);
+        dispatch(
+          login(
+            loginFormData,
+            setServerMessage,
+            setIsRequestComplete,
+            setHasRequestError,
+            setIsLoading,
+            navigation,
+            goToVerify,
+          ),
+        );
+      } else {
+        setPromptMessage(
+          'Please fill out all the fields and input valid values.',
+        );
+        setShowPrompt(true);
+      }
+
       // navigation.reset({index: 0, routes: [{name: 'Home'}]});
     } else if (isInRegister) {
-      setIsInPetForm(true);
+      if (isValidInputs(registerFormData, 'register')) {
+        setIsInPetForm(true);
+      } else {
+        setPromptMessage(
+          'Please fill out all the fields and input valid values.',
+        );
+        setShowPrompt(true);
+      }
     } else {
       console.log('verify here');
       setIsLoading(true);
@@ -154,10 +178,59 @@ const Auth = ({navigation}) => {
     }
   };
 
+  const handlePrompt = () => {
+    setShowPrompt(false);
+  };
+
   const clearFields = () => {
     setLoginFormData(initialLoginData);
     setRegisterFormData(initialRegisterData);
     setPetFormData(initialPetData);
+  };
+
+  const isValidInputs = (data, type) => {
+    var hasError = false;
+
+    if (type === 'login') {
+      Object.entries(data).forEach(item => {
+        if (item[1] === '') {
+          hasError = true;
+        }
+
+        if (item[0] === 'email') {
+          const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+          if (!regex.test(item[1])) {
+            hasError = true;
+          }
+        }
+      });
+    }
+
+    if (type === 'register') {
+      Object.entries(data).forEach(item => {
+        if (item[1] === '') {
+          hasError = true;
+        }
+
+        if (
+          item[0] === 'mobile_num' &&
+          (item[1].length < 11 || !item[1].startsWith('09'))
+        ) {
+          hasError = true;
+        }
+      });
+    }
+
+    if (type === 'registerPet') {
+      Object.entries(data).forEach(item => {
+        if (item[1] === '') {
+          hasError = true;
+        }
+      });
+    }
+
+    return !hasError;
   };
 
   return (
@@ -275,11 +348,11 @@ const Auth = ({navigation}) => {
             </>
           )}
 
-          {!isInRegister && !isInVerify && (
+          {/* {!isInRegister && !isInVerify && (
             <TouchableOpacity style={styles.forgotBtn}>
               <Text>Forgot Password?</Text>
             </TouchableOpacity>
-          )}
+          )} */}
 
           <TouchableOpacity style={styles.btn} onPress={handleButton}>
             <Text style={styles.btnText}>
@@ -345,6 +418,21 @@ const Auth = ({navigation}) => {
             onPress={handleModalButton}
             style={styles.modalBtn}
             size="small">
+            OK
+          </Button>
+        </Card>
+      </Modal>
+
+      <Modal visible={showPrompt}>
+        <Card disabled={true} style={styles.modal}>
+          <View style={styles.modalText}>
+            <Text>{promptMessage}</Text>
+          </View>
+          <Button
+            onPress={handlePrompt}
+            style={styles.modalBtn}
+            appearance="ghost"
+            status="basic">
             OK
           </Button>
         </Card>
@@ -440,6 +528,9 @@ const styles = StyleSheet.create({
   modalText: {
     height: 150,
     justifyContent: 'center',
+  },
+  modalBtn: {
+    alignSelf: 'flex-end',
   },
 });
 

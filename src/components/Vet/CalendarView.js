@@ -93,7 +93,6 @@ const CalendarView = () => {
           </Text>
           <Text>{`Appointment with ${item.userName}`}</Text>
         </View>
-        {console.log('item', item)}
         <View style={styles.statusContainer}>
           <Text
             category="c1"

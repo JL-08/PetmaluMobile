@@ -27,20 +27,29 @@ const VetLogin = ({navigation}) => {
   const [isRequestComplete, setIsRequestComplete] = useState(false);
   const [serverMessage, setServerMessage] = useState();
   const [hasRequestError, setHasRequestError] = useState(false);
-  const [hasFormError, setHasFormError] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [promptMessage, setPromptMessage] = useState();
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    dispatch(
-      vetLogin(
-        vetFormData,
-        setServerMessage,
-        setIsRequestComplete,
-        setHasRequestError,
-        setIsLoading,
-        navigation,
-      ),
-    );
+    if (isValidInputs(vetFormData)) {
+      setIsLoading(true);
+      dispatch(
+        vetLogin(
+          vetFormData,
+          setServerMessage,
+          setIsRequestComplete,
+          setHasRequestError,
+          setIsLoading,
+          navigation,
+        ),
+      );
+    } else {
+      setPromptMessage(
+        'Please fill out all the fields and input valid values.',
+      );
+      setShowPrompt(true);
+    }
   };
 
   const handleChange = (e, name) => {
@@ -49,6 +58,30 @@ const VetLogin = ({navigation}) => {
 
   const handleModalButton = () => {
     setIsRequestComplete(false);
+  };
+
+  const handlePrompt = () => {
+    setShowPrompt(false);
+  };
+
+  const isValidInputs = data => {
+    var hasError = false;
+
+    Object.entries(data).forEach(item => {
+      if (item[1] === '') {
+        hasError = true;
+      }
+
+      if (item[0] === 'email') {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!regex.test(item[1])) {
+          hasError = true;
+        }
+      }
+    });
+
+    return !hasError;
   };
 
   return (
@@ -112,7 +145,8 @@ const VetLogin = ({navigation}) => {
           <Button
             onPress={handleModalButton}
             style={styles.modalBtn}
-            size="small">
+            appearance="ghost"
+            status="basic">
             OK
           </Button>
         </Card>
@@ -121,6 +155,21 @@ const VetLogin = ({navigation}) => {
       <Modal visible={isLoading}>
         <Card disabled={true}>
           <ActivityIndicator size="large" color="#0000ff" />
+        </Card>
+      </Modal>
+
+      <Modal visible={showPrompt}>
+        <Card disabled={true} style={styles.modal}>
+          <View style={styles.modalText}>
+            <Text>{promptMessage}</Text>
+          </View>
+          <Button
+            onPress={handlePrompt}
+            style={styles.modalBtn}
+            appearance="ghost"
+            status="basic">
+            OK
+          </Button>
         </Card>
       </Modal>
     </ImageBackground>
@@ -208,6 +257,9 @@ const styles = StyleSheet.create({
   modalText: {
     height: 150,
     justifyContent: 'center',
+  },
+  modalBtn: {
+    alignSelf: 'flex-end',
   },
 });
 export default VetLogin;

@@ -9,7 +9,7 @@ export const StartUpScreen = ({navigation}) => {
     <View style={styles.container}>
       <Layout level="2">
         <Image
-          style={{...styles.img, height: 100}}
+          style={{...styles.img, height: 150}}
           source={require('../../images/pubmat-7.jpg')}
         />
       </Layout>
@@ -66,15 +66,18 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     flex: 1,
+    backgroundColor: '#A3D4FC',
   },
   img: {
-    height: 600,
+    height: 500,
     width: '100%',
   },
   btn: {
     position: 'absolute',
     bottom: 0,
     width: '100%',
+    backgroundColor: '#004AA0',
+    borderRadius: 0,
   },
 });
 
