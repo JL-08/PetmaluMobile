@@ -58,8 +58,15 @@ const Appointments = ({navigation}) => {
     );
   }, []);
 
-  const handleProceedToBrowser = () => {
-    Linking.openURL('https://google.com');
+  const handleProceedToBrowser = link => {
+    if (link === '') {
+      setServerMessage(
+        'No available meeting link yet. Please contact the administrator',
+      );
+      setShowPrompt(true);
+    } else {
+      Linking.openURL(link);
+    }
   };
 
   const handleRejectBtn = () => {
@@ -97,11 +104,21 @@ const Appointments = ({navigation}) => {
     }
   };
 
+  const changeImg = item => {
+    if (item.user_img_name === null || item.user_img_name === '') {
+      return 'http://petsmalu.xyz/images/default_avatar.gif';
+    } else {
+      return `http://petsmalu.xyz/uploads/${item.user_img_name}`;
+    }
+  };
+
   const renderItem = ({item}) => (
     <View style={{...styles.card, ...styles.row}}>
       <Image
         style={styles.avatar}
-        source={require('../../images/avatar.gif')}
+        source={{
+          uri: changeImg(item),
+        }}
       />
       <View style={{flex: 1}}>
         <View style={styles.row}>
@@ -145,13 +162,13 @@ const Appointments = ({navigation}) => {
             style={styles.btn}
             size="small"
             status="success"
-            onPress={() => handleProceedToBrowser(item.id)}>
+            onPress={() => handleProceedToBrowser(item.meeting_link)}>
             PROCEED
           </Button>
         </View>
       </View>
 
-      <Modal visible={showPrompt}>
+      {/* <Modal visible={showPrompt}>
         <Card disabled={true} style={styles.modal}>
           <View style={styles.modalText}>
             <Text>{serverMessage}</Text>
@@ -170,6 +187,23 @@ const Appointments = ({navigation}) => {
               status="basic"
               appearance="ghost">
               CANCEL
+            </Button>
+          </View>
+        </Card>
+      </Modal> */}
+
+      <Modal visible={showPrompt}>
+        <Card disabled={true} style={styles.modal}>
+          <View style={styles.modalText}>
+            <Text>{serverMessage}</Text>
+          </View>
+          <View style={{...styles.row, justifyContent: 'flex-end'}}>
+            <Button
+              onPress={() => setShowPrompt(false)}
+              style={styles.modalBtn}
+              status="basic"
+              appearance="ghost">
+              OK
             </Button>
           </View>
         </Card>

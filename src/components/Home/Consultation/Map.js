@@ -43,6 +43,14 @@ const Map = ({navigation, setIsLoading, isInMap, setIsInMap, position}) => {
     dispatch(getAllVets(setIsLoading));
   }, []);
 
+  const changeImg = item => {
+    if (item.img_name === null || item.img_name === '') {
+      return 'http://petsmalu.xyz/images/default_avatar.gif';
+    } else {
+      return `http://petsmalu.xyz/uploads/${item.img_name}`;
+    }
+  };
+
   return (
     <View>
       {!isInMap && (
@@ -80,7 +88,9 @@ const Map = ({navigation, setIsLoading, isInMap, setIsInMap, position}) => {
             <View style={{...styles.row, ...styles.cardContainer}}>
               <Image
                 style={{...styles.avatar, ...styles.rightMargin}}
-                source={require('../../../images/avatar.gif')}
+                source={{
+                  uri: changeImg(vetData),
+                }}
               />
               <View>
                 <Text style={styles.vetName} category="h6">

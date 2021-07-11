@@ -89,13 +89,23 @@ const VetList = ({navigation, setIsLoading, isInList, setIsInList}) => {
     }
   };
 
+  const changeImg = item => {
+    if (item.img_name === null || item.img_name === '') {
+      return 'http://petsmalu.xyz/images/default_avatar.gif';
+    } else {
+      return `http://petsmalu.xyz/uploads/${item.img_name}`;
+    }
+  };
+
   const renderItem = info => (
     <View style={styles.container}>
       <View style={styles.row}>
         <View style={{marginRight: 15}}>
           <Image
             style={styles.avatar}
-            source={require('../../../images/avatar.gif')}
+            source={{
+              uri: changeImg(info.item),
+            }}
           />
         </View>
 
@@ -177,7 +187,9 @@ const VetList = ({navigation, setIsLoading, isInList, setIsInList}) => {
             style={{marginRight: 15, marginVertical: 10, flexDirection: 'row'}}>
             <Image
               style={styles.avatar2}
-              source={require('../../../images/avatar.gif')}
+              source={{
+                uri: changeImg(selectedVet),
+              }}
             />
             <View style={styles.margin}>
               <Text style={styles.name} category="h6">

@@ -71,12 +71,22 @@ const WalkInBookingForm = ({
     }
   };
 
+  const changeImg = item => {
+    if (item.img_name === null || item.img_name === '') {
+      return 'http://petsmalu.xyz/images/default_avatar.gif';
+    } else {
+      return `http://petsmalu.xyz/uploads/${item.img_name}`;
+    }
+  };
+
   return (
     <View>
       <View style={{marginRight: 15, marginVertical: 10, flexDirection: 'row'}}>
         <Image
           style={styles.avatar2}
-          source={require('../../../images/avatar.gif')}
+          source={{
+            uri: changeImg(vetData),
+          }}
         />
         <View style={styles.margin}>
           <Text style={styles.name} category="h6">

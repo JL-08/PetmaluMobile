@@ -6,6 +6,9 @@ import {
   StyleSheet,
   ImageBackground,
   ActivityIndicator,
+  ScrollView,
+  RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import {
   Text,
@@ -16,6 +19,7 @@ import {
   Card,
 } from '@ui-kitten/components';
 import CalendarPicker from 'react-native-calendar-picker';
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import {getAllVetAppointments} from '../../actions/appointmentActions';
 
 const CalendarView = () => {
@@ -23,6 +27,7 @@ const CalendarView = () => {
   const [selectedAppointmentList, setSelectedAppointmentList] = useState();
   const [appointmentDates, setAppointmentDates] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
   const vet = useSelector(state => state.auth.authVetData);
   const appointments = useSelector(
     state => state.appointment.vetAppointmentsData,
@@ -67,6 +72,16 @@ const CalendarView = () => {
       setSelectedAppointmentList(filteredList);
     }
   }, [date]);
+
+  const onRefresh = React.useCallback(() => {
+    setIsLoading(true);
+    dispatch(getAllVetAppointments(vet.id, setIsLoading));
+  }, []);
+
+  const reload = () => {
+    setIsLoading(true);
+    dispatch(getAllVetAppointments(vet.id, setIsLoading));
+  };
 
   const renderItem = ({item}) => (
     <ListItem>
@@ -128,6 +143,11 @@ const CalendarView = () => {
           </View>
         </View>
       </View>
+
+      <TouchableOpacity style={styles.floatingBtn} onPress={reload}>
+        <Icon name="refresh" color="white" size={15} />
+      </TouchableOpacity>
+
       <Modal visible={isLoading}>
         <Card disabled={true}>
           <ActivityIndicator size="large" color="#0000ff" />
@@ -163,6 +183,17 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     alignContent: 'center',
+  },
+  floatingBtn: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    position: 'absolute',
+    bottom: 10,
+    right: 15,
+    backgroundColor: '#7067DE',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

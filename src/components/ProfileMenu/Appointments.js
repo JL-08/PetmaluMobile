@@ -36,11 +36,21 @@ const Appointments = ({navigation}) => {
     dispatch(getAllUserAppointments(user.user_id, setRefreshing));
   }, []);
 
+  const changeImg = item => {
+    if (item.vet_img_name === null || item.vet_img_name === '') {
+      return 'http://petsmalu.xyz/images/default_avatar.gif';
+    } else {
+      return `http://petsmalu.xyz/uploads/${item.vet_img_name}`;
+    }
+  };
+
   const renderItem = info => (
     <View style={{...styles.card, ...styles.row}}>
       <Image
         style={styles.avatar}
-        source={require('../../images/avatar.gif')}
+        source={{
+          uri: changeImg(info.item),
+        }}
       />
       <View>
         <View>
