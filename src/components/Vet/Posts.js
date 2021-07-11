@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     paddingBottom: 80,
     paddingTop: 0,
+    backgroundColor: '#F7F9FC',
   },
   contentContainer: {
     paddingHorizontal: 8,

@@ -38,7 +38,6 @@ const CalendarView = () => {
   };
 
   useEffect(() => {
-    console.log('vet', vet);
     setIsLoading(true);
     dispatch(getAllVetAppointments(vet.id, setIsLoading));
   }, [vet]);
@@ -106,8 +105,8 @@ const CalendarView = () => {
         padding: 10,
       }}>
       <View style={styles.container}>
-        {console.log(appointmentDates)}
         <CalendarPicker
+          style={{backgroundColor: '#F7F9FC'}}
           todayBackgroundColor="#CFCCF4"
           selectedStartDate={date}
           selectedDayColor="#7068DE"
@@ -141,7 +140,7 @@ const CalendarView = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#eee',
+    backgroundColor: '#F7F9FC',
     borderRadius: 20,
   },
   dateContainer: {
