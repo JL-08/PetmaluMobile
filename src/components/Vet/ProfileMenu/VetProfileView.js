@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
+import {useSelector} from 'react-redux';
 import {View, StyleSheet, Image, ImageBackground} from 'react-native';
 import {Input, Text, Button} from '@ui-kitten/components';
 
 const VetProfileView = () => {
-  const [isInEditMode, setIsInEditMode] = useState(false);
+  const vet = useSelector(state => state.auth.authVetData);
 
   return (
     <ImageBackground
@@ -20,59 +21,21 @@ const VetProfileView = () => {
           source={require('../../../images/avatar.gif')}
         />
         <Text category="h3" style={styles.name}>
-          IAN BENEDICT PACELO
+          {vet.name}
         </Text>
       </View>
       <View style={{...styles.bottomMargin, marginTop: 20}}>
         <Text style={styles.bold} category="h6">
           Email:
         </Text>
-        {isInEditMode ? (
-          <Input value={'hello@gmail.com'} />
-        ) : (
-          <Text category="h6">hello@gmail.com</Text>
-        )}
+        <Text category="h6">{vet.email}</Text>
       </View>
-      <View style={styles.bottomMargin}>
+      {/* <View style={styles.bottomMargin}>
         <Text style={styles.bold} category="h6">
           Contact Number:
         </Text>
-
-        {isInEditMode ? (
-          <Input value={'09123456789'} />
-        ) : (
-          <Text category="h6">09123456789</Text>
-        )}
-      </View>
-      {isInEditMode ? (
-        <>
-          <View style={styles.bottomMargin}>
-            <Text style={styles.bold} category="h6">
-              Enter Password to Confirm:
-            </Text>
-            <Input value={'12345678'} />
-          </View>
-          <View style={styles.row}>
-            <Button style={styles.submitBtn}>SUBMIT</Button>
-            <Button
-              appearance="ghost"
-              status="danger"
-              onPress={() => setIsInEditMode(false)}>
-              Cancel
-            </Button>
-          </View>
-        </>
-      ) : (
-        <>
-          <Button onPress={() => setIsInEditMode(true)}>CHANGE DETAILS</Button>
-          <Button
-            onPress={() => setIsInEditMode(true)}
-            appearance="outline"
-            style={{marginTop: 5}}>
-            CHANGE PASSWORD
-          </Button>
-        </>
-      )}
+        <Text category="h6">{vet.mobile_num}</Text>
+      </View> */}
     </ImageBackground>
   );
 };
