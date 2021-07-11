@@ -23,6 +23,7 @@ import {getAllUserPets} from '../../actions/petActons';
 const Pets = ({route, navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [selectedPet, setSelectedPet] = React.useState();
   const [trigger, setTrigger] = React.useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.authData);
@@ -32,6 +33,12 @@ const Pets = ({route, navigation}) => {
     setRefreshing(true);
     dispatch(getAllUserPets(user.user_id, setRefreshing));
   }, []);
+
+  useEffect(() => {
+    if (selectedPet) {
+      navigation.navigate('Pet Details', selectedPet);
+    }
+  }, [selectedPet]);
 
   useEffect(() => {
     if (route?.params?.isActionDone) {
@@ -47,17 +54,20 @@ const Pets = ({route, navigation}) => {
     dispatch(getAllUserPets(user.user_id, setRefreshing));
   }, []);
 
+  const changeImg = item => {
+    if (item.img_name === null || item.img_name === '') {
+      return 'http://petsmalu.xyz/images/pet_default_avatar.png';
+    } else {
+      return `http://petsmalu.xyz/uploads/${item.img_name}`;
+    }
+  };
+
   const renderItem = ({item, index}) => (
-    <ListItem
-      style={styles.itemList}
-      onPress={() => navigation.navigate('Pet Details', {...item})}>
+    <ListItem style={styles.itemList} onPress={() => setSelectedPet(item)}>
       <Image
         style={styles.avatar}
         source={{
-          uri:
-            item.img_name === null || item.img_name === ''
-              ? 'http://petsmalu.xyz/images/default_avatar.gif'
-              : `http://petsmalu.xyz/uploads/${item.img_name}`,
+          uri: changeImg(item),
         }}
       />
       <View>

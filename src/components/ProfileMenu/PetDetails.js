@@ -44,7 +44,7 @@ const PetDetails = ({route, navigation}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setIsLoading(true);
+    setIsLoading(false);
     dispatch(getPet(petDetails.id, setIsLoading));
   }, []);
 
@@ -118,6 +118,14 @@ const PetDetails = ({route, navigation}) => {
     });
   };
 
+  const changeImg = item => {
+    if (item.img_name === null || item.img_name === '') {
+      return 'http://petsmalu.xyz/images/pet_default_avatar.png';
+    } else {
+      return `http://petsmalu.xyz/uploads/${item.img_name}`;
+    }
+  };
+
   return (
     <ImageBackground
       source={require('../../images/background.png')}
@@ -132,13 +140,8 @@ const PetDetails = ({route, navigation}) => {
           <Image
             style={styles.avatar}
             source={{
-              uri: image
-                ? image
-                : 'http://petsmalu.xyz/images/default_avatar.gif',
+              uri: changeImg(petDetails),
             }}
-            onError={() =>
-              setImage('http://petsmalu.xyz/images/default_avatar.gif')
-            }
           />
         </TouchableOpacity>
 

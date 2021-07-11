@@ -33,6 +33,7 @@ import CreatePost from './src/components/Vet/CreatePost';
 import EditPost from './src/components/Vet/EditPost';
 import History from './src/components/Vet/ProfileMenu/History';
 import VetProfileView from './src/components/Vet/ProfileMenu/VetProfileView';
+import StartUpScreen from './src/components/StartUp/StartUpScreen';
 
 const customTextProps = {
   style: {
@@ -54,7 +55,12 @@ const App = () => {
         <ApplicationProvider {...eva} theme={{...eva.light, ...theme}}>
           <NavigationContainer>
             <View style={{flex: 1, flexDirection: 'column'}}>
-              <Stack.Navigator initialRouteName="Auth">
+              <Stack.Navigator initialRouteName="StartUp">
+                <Stack.Screen
+                  name="StartUp"
+                  component={StartUpScreen}
+                  options={{headerShown: false}}
+                />
                 <Stack.Screen
                   name="Auth"
                   component={Auth}
