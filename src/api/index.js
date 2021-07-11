@@ -52,3 +52,5 @@ export const updatePet = formData => API.post('/updatePet.php', formData);
 export const getPet = id => API.post('/getPet.php', {id});
 
 export const registerPet = formData => API.post('/registerPet.php', formData);
+
+export const getAllFaqs = () => API.get('/getAllFaqs.php');

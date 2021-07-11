@@ -1,6 +1,15 @@
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Menu, MenuGroup, MenuItem, Input, Text} from '@ui-kitten/components';
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet, ActivityIndicator} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  Menu,
+  MenuGroup,
+  MenuItem,
+  Input,
+  Text,
+  Modal,
+  Card,
+} from '@ui-kitten/components';
 import ContentTitle from './ContentTitle';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
@@ -8,34 +17,66 @@ const SearchIcon = () => (
   <Icon style={{marginLeft: 10}} name="search" size={20} color="#888" />
 );
 
-const SearchBar = () => (
-  <Input
-    style={styles.searchBar}
-    placeholder="Search"
-    accessoryLeft={SearchIcon}
-  />
-);
+import {getAllFaqs} from '../../actions/faqsActions';
 
 const FAQs = () => {
   const [selectedIndex, setSelectedIndex] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [faqsList, setFaqsList] = React.useState();
+  const [searchInput, setSearchInput] = React.useState();
+  const faqs = useSelector(state => state.faq.faqsData);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setIsLoading(true);
+    dispatch(getAllFaqs(setIsLoading));
+  }, []);
+
+  useEffect(() => {
+    setFaqsList(faqs);
+  }, [faqs]);
+
+  useEffect(() => {
+    if (searchInput === '') {
+      setFaqsList(faqs);
+    }
+  }, [searchInput]);
+
+  const handleSearch = e => {
+    const filteredList = faqs.filter(f =>
+      f.question.toLowerCase().includes(e.toLowerCase()),
+    );
+
+    setSearchInput(e);
+    setFaqsList(filteredList);
+  };
 
   return (
     <View style={styles.container}>
       <ContentTitle title="Frequently Asked Questions" />
-      <SearchBar />
+      <Input
+        style={styles.searchBar}
+        value={searchInput}
+        placeholder="Search"
+        accessoryLeft={SearchIcon}
+        onChangeText={e => handleSearch(e)}
+      />
       <Menu
         selectedIndex={selectedIndex}
         onSelect={index => setSelectedIndex(index)}>
-        <MenuGroup title="Lorem ipsum dolor sit amet,">
-          <MenuItem title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis turpis nisl, sodales ut semper non, iaculis et enim. Nunc sit amet felis ac lacus condimentum posuere at fringilla risus. Pellentesque interdum urna vitae ex luctus sollicitudin. Cras vulputate in lacus at euismod. Integer eleifend ex in feugiat iaculis. Vivamus interdum sit amet eros ac ultrices. Sed urna sem, posuere eget dapibus a, venenatis sed erat. Mauris dictum venenatis arcu, eget suscipit mi faucibus non. Morbi efficitur elit id ante placerat sollicitudin vel eu lacus. Nunc ut tortor vulputate, iaculis tellus non, pretium sapien." />
-        </MenuGroup>
-        <MenuGroup title="Lorem ipsum dolor sit amet,">
-          <MenuItem title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis turpis nisl, sodales ut semper non, iaculis et enim. Nunc sit amet felis ac lacus condimentum posuere at fringilla risus. Pellentesque interdum urna vitae ex luctus sollicitudin. Cras vulputate in lacus at euismod. Integer eleifend ex in feugiat iaculis. Vivamus interdum sit amet eros ac ultrices. Sed urna sem, posuere eget dapibus a, venenatis sed erat. Mauris dictum venenatis arcu, eget suscipit mi faucibus non. Morbi efficitur elit id ante placerat sollicitudin vel eu lacus. Nunc ut tortor vulputate, iaculis tellus non, pretium sapien." />
-        </MenuGroup>
-        <MenuGroup title="Lorem ipsum dolor sit amet,">
-          <MenuItem title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis turpis nisl, sodales ut semper non, iaculis et enim. Nunc sit amet felis ac lacus condimentum posuere at fringilla risus. Pellentesque interdum urna vitae ex luctus sollicitudin. Cras vulputate in lacus at euismod. Integer eleifend ex in feugiat iaculis. Vivamus interdum sit amet eros ac ultrices. Sed urna sem, posuere eget dapibus a, venenatis sed erat. Mauris dictum venenatis arcu, eget suscipit mi faucibus non. Morbi efficitur elit id ante placerat sollicitudin vel eu lacus. Nunc ut tortor vulputate, iaculis tellus non, pretium sapien." />
-        </MenuGroup>
+        {faqsList &&
+          faqsList.map(faq => (
+            <MenuGroup key={faq.id} title={faq.question}>
+              <MenuItem title={faq.answer} />
+            </MenuGroup>
+          ))}
       </Menu>
+
+      <Modal visible={isLoading}>
+        <Card disabled={true}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </Card>
+      </Modal>
     </View>
   );
 };
