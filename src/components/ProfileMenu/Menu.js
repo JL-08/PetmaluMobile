@@ -51,14 +51,10 @@ const Menu = ({navigation}) => {
         onPress={() => navigation.push('Appointments')}
       />
       <DrawerItem
-        title="Contact Us"
-        accessoryLeft={PhoneIcon}
-        accessoryRight={ForwardIcon}
-      />
-      <DrawerItem
         title="About Us"
         accessoryLeft={AboutIcon}
         accessoryRight={ForwardIcon}
+        onPress={() => navigation.push('About')}
       />
       <DrawerItem
         title="Logout"

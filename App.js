@@ -34,6 +34,7 @@ import EditPost from './src/components/Vet/EditPost';
 import History from './src/components/Vet/ProfileMenu/History';
 import VetProfileView from './src/components/Vet/ProfileMenu/VetProfileView';
 import StartUpScreen from './src/components/StartUp/StartUpScreen';
+import About from './src/components/ProfileMenu/About';
 
 const customTextProps = {
   style: {
@@ -171,6 +172,17 @@ const App = () => {
                 <Stack.Screen
                   name="Add a Pet"
                   component={AddPet}
+                  options={{
+                    headerShown: true,
+                    headerStyle: {
+                      backgroundColor: '#7068DE',
+                    },
+                    headerTintColor: '#fff',
+                  }}
+                />
+                <Stack.Screen
+                  name="About"
+                  component={About}
                   options={{
                     headerShown: true,
                     headerStyle: {
