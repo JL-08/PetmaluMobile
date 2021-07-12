@@ -36,13 +36,15 @@ const VetList = ({navigation, setIsLoadingCopy, isInList, setIsInList}) => {
   const [time, setTime] = useState(new Date());
   const [duration, setDuration] = useState();
   const [selectedDurationUnit, setSelectedDurationUnit] = useState(0);
-  const [reason, setReason] = useState();
+  const [reason, setReason] = useState('');
   const [isEditingTime, setIsEditingTime] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isRequestComplete, setIsRequestComplete] = useState(false);
   const [serverMessage, setServerMessage] = useState();
   const [hasRequestError, setHasRequestError] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [promptMessage, setPromptMessage] = useState();
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.authData);
   const vetList = useSelector(state => state.vet.authData);
@@ -96,34 +98,57 @@ const VetList = ({navigation, setIsLoadingCopy, isInList, setIsInList}) => {
   };
 
   const handleContinue = () => {
-    setIsLoading(true);
+    if (isValidInputs({duration, reason})) {
+      setIsLoading(true);
 
-    const appointment = {
-      type: 'online',
-      vet: selectedVet.id,
-      user: user.user_id,
-      date: `${moment(date).format('YYYY-MM-DD')} ${moment(time).format(
-        'kk:mm',
-      )}`,
-      end_date: calculateEndDate(),
-      pet: petList[selectedIndex].id,
-      reason,
-    };
+      const appointment = {
+        type: 'online',
+        vet: selectedVet.id,
+        user: user.user_id,
+        date: `${moment(date).format('YYYY-MM-DD')} ${moment(time).format(
+          'kk:mm',
+        )}`,
+        end_date: calculateEndDate(),
+        pet: petList[selectedIndex].id,
+        reason,
+      };
 
-    dispatch(
-      checkAppointmentValidity(
-        appointment,
-        setServerMessage,
-        setIsRequestComplete,
-        setHasRequestError,
-        setIsLoading,
-        navigation,
-      ),
-    );
+      dispatch(
+        checkAppointmentValidity(
+          appointment,
+          setServerMessage,
+          setIsRequestComplete,
+          setHasRequestError,
+          setIsLoading,
+          navigation,
+        ),
+      );
+    } else {
+      setPromptMessage(
+        'Please fill out all the fields and input valid values.',
+      );
+      setShowPrompt(true);
+    }
   };
 
   const handleModalButton = () => {
     setIsRequestComplete(false);
+  };
+
+  const isValidInputs = data => {
+    var hasError = false;
+
+    Object.entries(data).forEach(item => {
+      if (item[1] === '' || item[1] <= 0 || item[1] === undefined) {
+        hasError = true;
+      }
+    });
+    console.log(data);
+    return !hasError;
+  };
+
+  const handlePrompt = () => {
+    setShowPrompt(false);
   };
 
   const changeImg = item => {
@@ -316,6 +341,21 @@ const VetList = ({navigation, setIsLoadingCopy, isInList, setIsInList}) => {
             style={styles.modalBtn}
             status="basic"
             appearance="ghost">
+            OK
+          </Button>
+        </Card>
+      </Modal>
+
+      <Modal visible={showPrompt}>
+        <Card disabled={true} style={styles.modal}>
+          <View style={styles.modalText}>
+            <Text>{promptMessage}</Text>
+          </View>
+          <Button
+            onPress={handlePrompt}
+            style={styles.modalBtn}
+            appearance="ghost"
+            status="basic">
             OK
           </Button>
         </Card>

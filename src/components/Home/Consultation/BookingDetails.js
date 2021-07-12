@@ -96,7 +96,7 @@ const BookingDetails = ({route, navigation}) => {
         Follow the steps below in order to proceed with your booking.
       </Text>
       <Text>1. Go to your GCash app</Text>
-      <Text>2. Send Money to 09xxxxxxxx</Text>
+      <Text>2. Send Money to 09459436257</Text>
       <Text>3. Download the receipt upon successful payment</Text>
       <Text>4. Use the button below to upload the receipt</Text>
       <Text>5. Press the BOOK APPOINTMENT button</Text>
