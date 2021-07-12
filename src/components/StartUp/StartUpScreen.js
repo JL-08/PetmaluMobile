@@ -55,7 +55,8 @@ export const StartUpScreen = ({navigation}) => {
       </ViewPager>
       <Button
         style={styles.btn}
-        onPress={() => navigation.reset({index: 0, routes: [{name: 'Auth'}]})}>
+        onPress={() => navigation.reset({index: 0, routes: [{name: 'Auth'}]})}
+        size="large">
         PROCEED TO LOGIN
       </Button>
     </View>
