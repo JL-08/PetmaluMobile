@@ -65,7 +65,7 @@ const Posts = ({navigation, route}) => {
           <Image
             style={styles.img}
             source={{
-              uri: `http://10.0.2.2/petsmalu/upload/images/${item.img_name}`,
+              uri: `http://petsmalu.xyz/uploads/${item.img_name}`,
             }}
           />
         </>
