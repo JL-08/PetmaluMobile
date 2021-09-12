@@ -105,9 +105,6 @@ const WalkInBookingForm = ({setIsInMap, vetData, setVetData, navigation}) => {
         ),
       );
     } else {
-      setPromptMessage(
-        'Please fill out all the fields and input valid values.',
-      );
       setShowPrompt(true);
     }
   };
@@ -124,7 +121,21 @@ const WalkInBookingForm = ({setIsInMap, vetData, setVetData, navigation}) => {
         hasError = true;
       }
     });
-    console.log(data);
+
+    setPromptMessage('Please fill out all the fields and input valid values.');
+
+    const start_date = `${moment(date).format('YYYY-MM-DD')} ${moment(
+      time,
+    ).format('kk:mm')}`;
+
+    if (
+      moment(start_date).format('YYYY-MM-DD kk:mm') === 'Invalid date' ||
+      moment(start_date).format('YYYY-MM-DD kk:mm') <=
+        moment(Date.now()).format('YYYY-MM-DD kk:mm')
+    ) {
+      hasError = true;
+      setPromptMessage('Please input valid date values.');
+    }
     return !hasError;
   };
 
